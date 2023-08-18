@@ -1,0 +1,12 @@
+[build]
+  command = "npm run build"
+  functions = "functions"
+  publish = "dist/emotion-analysis"
+[functions]
+  node_bundler = "esbuild"
+[dev]
+  autoLaunch = false
+[[redirects]]
+  from = "/*"
+  to = "/"
+  status = 200

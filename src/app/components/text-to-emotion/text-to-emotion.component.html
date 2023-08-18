@@ -1,0 +1,43 @@
+<form class="mat-flex-form">
+  <p class="mat-headline-6"
+    [ngClass]="{'appDescriptionPortrait': ifHandsetPortrait, 'appDescriptionLandscape': ifHandsetLandscape}">
+    The application will detect your current emotion, based on the description you provide, and will display a color
+    that is related to that emotion. You will be able to get a guided meditation that includes your color visualization.
+    The analyzer currently works with six emotions.</p>
+  <p class="mat-subtitle-2">Describe in a sentence something that has been on your mind or choose from the example list.
+  </p>
+  <mat-form-field class="item">
+    <mat-label>Your thoughts</mat-label>
+    <input type="text" matInput placeholder="My boss told me that my problem-solving skills have improved lately"
+      [formControl]="promptControl" [matAutocomplete]="auto" [(ngModel)]="sentence" #prompt>
+  </mat-form-field>
+  <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption="true">
+    <mat-option *ngFor="let prompt of filteredPrompts | async" [value]="prompt">
+      {{ prompt }}
+    </mat-option>
+  </mat-autocomplete>
+  <mat-hint hidden [ngClass]="{'matHintMobilePortrait': ifWeb}">{{userInput}}</mat-hint>
+
+  <div class="mat-button">
+    <button class="item" mat-raised-button (click)="analyzeSentence()" [disabled]="!sentence" required>How do I
+      feel?</button>
+  </div>
+
+</form>
+
+
+<div *ngIf="loadingSpinner" class="spinner-wrapper">
+  <mat-spinner></mat-spinner>
+</div>
+<div class="mat-flex-status" *ngIf="statusLoaded" #emotions>
+  <p class=" mat-headline-4" [ngClass]="{'mat-headline-4-mobilePortrait': ifHandsetPortrait}">Your emotional status</p>
+  <p class="emotion-description" [ngClass]="{'emotion-description-mobilePortrait': ifHandsetPortrait}">
+    {{emotionDescription}}</p>
+  <p>Emotion with score</p>
+  <div *ngFor=" let emo of emotionsAndScoresList">
+    <h4>{{emo.emotion}} <span [innerHTML]="emo.emoji"></span> {{emo.score | percent}}</h4>
+  </div>
+</div>
+<div id="emotional-status"></div>
+{{emotionsNormalized | json}}
+<router-outlet></router-outlet>

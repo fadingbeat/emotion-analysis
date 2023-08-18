@@ -1,0 +1,9 @@
+<h1 mat-dialog-title>Something went wrong!</h1>
+<mat-dialog-content>
+  <p class="error-message">
+    {{ data.message }}
+  </p>
+  <mat-dialog-actions>
+    <button (click)="close();" mat-raised-button mat-dialog-close color="primary">Close</button>
+  </mat-dialog-actions>
+</mat-dialog-content>
