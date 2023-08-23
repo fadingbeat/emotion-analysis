@@ -1,0 +1,82 @@
+@use '@angular/material' as mat;
+@use 'sass:map';
+@include mat.core();
+
+$sky-palette: (
+    50: #f0f9ff,
+    100: #c0e8fb,
+    200: #96dafa,
+    300: #72cbf8,
+    400: #2fb8f3,
+    500: #0eadf1,
+    600: #099de2,
+    700: #038ace,
+    800: #037aba,
+    900: #005998,
+    contrast: (
+        50: rgba(black, 0.87),
+        100: rgba(black, 0.87),
+        200: rgba(black, 0.87),
+        300: rgba(black, 0.87),
+        400: rgba(black, 0.87),
+        500: white,
+        600: white,
+        700: white,
+        800: white,
+        900: white,
+    ),
+);
+$pink-palette: (
+    50: #fdf2f8,
+    100: #ffdcee,
+    200: #fdb0cb,
+    300: #fe90b5,
+    400: #ff70a4,
+    500: #ff5691,
+    600: #ff5892,
+    700: #ff4d86,
+    800: #f4467d,
+    900: #e6396f,
+    contrast: (
+        50: rgba(black, 0.87),
+        100: rgba(black, 0.87),
+        200: rgba(black, 0.87),
+        300: rgba(black, 0.87),
+        400: rgba(black, 0.87),
+        500: white,
+        600: white,
+        700: white,
+        800: white,
+        900: white,
+    ),
+);
+
+$my-primary: mat.define-palette($sky-palette, 500);
+$my-accent: mat.define-palette($pink-palette, 500);
+$my-warn: mat.define-palette(mat.$red-palette);
+
+$sky-theme: mat.define-light-theme(
+    (
+        color: (
+            primary: $my-primary,
+            accent: $my-accent,
+        ),
+        density: 0,
+    )
+);
+
+@mixin inputBorderBottomColor($sky-theme) {
+    $color-config: mat.get-color-config($sky-theme);
+    $primary-palette: map.get($color-config, "primary");
+    .mdc-text-field--filled .mdc-line-ripple::after {
+        border-bottom-color: mat.get-color-from-palette($primary-palette, 500);
+    }
+}
+
+@mixin inputBackgroundColor($sky-theme) {
+    $color-config: mat.get-color-config($sky-theme);
+    $primary-palette: map.get($color-config, "accent");
+    .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+        background-color: mat.get-color-from-palette($primary-palette, 50);
+    }
+}
