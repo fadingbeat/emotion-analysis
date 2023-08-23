@@ -19,7 +19,7 @@
         "importHelpers": true,
         "target": "es2015",
         "module": "ESNext",
-        "lib": ["es2018", "dom"]
+        "lib": ["es2018", "dom", "esnext"]
     },
     "angularCompilerOptions": {
         "strictInjectionParameters": true,

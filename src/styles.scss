@@ -1,4 +1,25 @@
 /* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+@use './theme.scss' as theme;
+@import "theme.scss";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: "Material Icons";
+    font-style: normal;
+    font-weight: 400;
+    src: url(https://example.com/MaterialIcons-Regular.eot); /* For IE6-8 */
+    src: local("Material Icons"), local("MaterialIcons-Regular"),
+        url(https://example.com/MaterialIcons-Regular.woff2) format("woff2"),
+        url(https://example.com/MaterialIcons-Regular.woff) format("woff"),
+        url(https://example.com/MaterialIcons-Regular.ttf) format("truetype");
+}
+
+@include theme.inputBorderBottomColor($sky-theme);
+@include theme.inputBackgroundColor($sky-theme);
 
 html,
 body {
@@ -81,7 +102,7 @@ body {
     margin: 0 10%;
 }
 
-// window screen sizes
+/* window screen sizes */
 /* Text To Emotion component */
 .appDescriptionPortrait {
     font-size: 16px;
@@ -125,8 +146,9 @@ footer {
     width: 100%;
     height: max-content;
     padding: 1em 0;
-    a {
-        text-decoration: none;
-        color: #ff8351;
-    }
+}
+
+footer a {
+    text-decoration: none;
+    color: #ff8351;
 }

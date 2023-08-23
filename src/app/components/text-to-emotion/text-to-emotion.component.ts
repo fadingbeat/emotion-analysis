@@ -35,9 +35,12 @@ export class TextToEmotionComponent implements OnInit {
     ifWeb = false;
     uuid = '';
     loadingSpinner = false;
+    buttonClicked = false;
 
     // taking values from emotions_normalized object, storing and displaying only value (emotion) with the highest score
     emotionsNormalized: any;
+    emotionsScoresNormalized: any;
+    emotionsScoresNormalizedListOfObj: any;
 
     // emoticons
     emojis = {
@@ -100,6 +103,7 @@ export class TextToEmotionComponent implements OnInit {
 
     analyzeSentence() {
         this.router.navigateByUrl('home');
+        this.buttonClicked = true;
         this.emotionsAndScoresList = [];
         this.loadingSpinner = true;
 
@@ -108,6 +112,9 @@ export class TextToEmotionComponent implements OnInit {
         this.textToEmotionService.getEmotionsMock().subscribe((res) => {
             const emotions = JSON.parse(JSON.stringify(res));
             this.emotionsNormalized = emotions.emotions_normalized;
+            this.emotionsScoresNormalized = this.convertObjectToListOfObjects(
+                this.emotionsNormalized
+            );
             this.emotionScores = emotions.emotion_scores;
             this.statusLoaded = true;
             for (const em of [this.emotionsNormalized]) {
@@ -138,6 +145,7 @@ export class TextToEmotionComponent implements OnInit {
                     score: em[emotionHighest],
                     emoji,
                 };
+
                 this.emotionsAndScoresList.push(this.detectedEmotionScores);
                 this.loadingSpinner = false;
             }
@@ -200,5 +208,20 @@ export class TextToEmotionComponent implements OnInit {
         //         console.log('something went wrong', err);
         //     }
         // );
+    }
+
+    convertObjectToListOfObjects(
+        obj: Record<string, any>
+    ): Record<string, any>[] {
+        const listOfObjects: Record<string, any>[] = [];
+
+        for (const key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                const singleObj: Record<string, any> = {};
+                singleObj[key] = obj[key];
+                listOfObjects.push(singleObj);
+            }
+        }
+        return listOfObjects;
     }
 }

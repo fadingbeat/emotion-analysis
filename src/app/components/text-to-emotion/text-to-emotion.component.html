@@ -1,26 +1,29 @@
 <form class="mat-flex-form">
-  <p class="mat-headline-6"
-    [ngClass]="{'appDescriptionPortrait': ifHandsetPortrait, 'appDescriptionLandscape': ifHandsetLandscape}">
-    The application will detect your current emotion, based on the description you provide, and will display a color
-    that is related to that emotion. You will be able to get a guided meditation that includes your color visualization.
-    The analyzer currently works with six emotions.</p>
-  <p class="mat-subtitle-2">Describe in a sentence something that has been on your mind or choose from the example list.
-  </p>
+  <div class=" mat-headline-6">
+    <p class="font-sans text-4xl pt-6 pb-8 tracking-tighter"
+      [ngClass]="{'appDescriptionPortrait': ifHandsetPortrait, 'appDescriptionLandscape': ifHandsetLandscape}">
+      Tell me what's on your <span class="underline decoration-sky-500">mind</span>, and I'll tell you what's in your
+      <span class="underline decoration-pink-500">heart</span>.
+    </p>
+
+
+
+  </div>
+
   <mat-form-field class="item">
-    <mat-label>Your thoughts</mat-label>
-    <input type="text" matInput placeholder="My boss told me that my problem-solving skills have improved lately"
-      [formControl]="promptControl" [matAutocomplete]="auto" [(ngModel)]="sentence" #prompt>
+    <mat-hint>Describe your feelings</mat-hint>
+    <mat-label><span class="animation-pulse text-pink-400">Type here ...</span></mat-label>
+    <input matInput placeholder="My boss told me that my problem-solving skills have improved lately"
+      [formControl]="promptControl" [(ngModel)]="sentence" #prompt>
   </mat-form-field>
-  <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption="true">
-    <mat-option *ngFor="let prompt of filteredPrompts | async" [value]="prompt">
-      {{ prompt }}
-    </mat-option>
-  </mat-autocomplete>
   <mat-hint hidden [ngClass]="{'matHintMobilePortrait': ifWeb}">{{userInput}}</mat-hint>
 
-  <div class="mat-button">
-    <button class="item" mat-raised-button (click)="analyzeSentence()" [disabled]="!sentence" required>How do I
+  <div class="mat-button ">
+    <button class="rounded bg-pink-600 text-white hover:bg-pink-500 disabled:opacity-75 py-2 px-2 "
+      (click)=" analyzeSentence()" [disabled]="!sentence" required>How
+      do I
       feel?</button>
+
   </div>
 
 </form>
@@ -37,7 +40,16 @@
   <div *ngFor=" let emo of emotionsAndScoresList">
     <h4>{{emo.emotion}} <span [innerHTML]="emo.emoji"></span> {{emo.score | percent}}</h4>
   </div>
+  <div *ngIf="buttonClicked"><span class="material-icons animate-ping scale-150 text-red-500">
+      favorite
+    </span></div>
+</div>
+<div *ngFor="let emo of emotionsScoresNormalized">
+  <div class="emotion-bubble rounded-full bg-sky-300 flex justify-center items-center "
+    style=" height: 200px; width: 200px;">
+    <h2>{{emo}}</h2>
+  </div>
+
 </div>
 <div id="emotional-status"></div>
-{{emotionsNormalized | json}}
 <router-outlet></router-outlet>
