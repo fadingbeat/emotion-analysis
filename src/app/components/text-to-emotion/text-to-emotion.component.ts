@@ -39,8 +39,7 @@ export class TextToEmotionComponent implements OnInit {
 
     // taking values from emotions_normalized object, storing and displaying only value (emotion) with the highest score
     emotionsNormalized: any;
-    emotionsScoresNormalized: any;
-    emotionsScoresNormalizedListOfObj: any;
+    emotionsScoresNormalized: Record<string, any>[] = [];
 
     // emoticons
     emojis = {
@@ -103,7 +102,6 @@ export class TextToEmotionComponent implements OnInit {
 
     analyzeSentence() {
         this.router.navigateByUrl('home');
-        this.buttonClicked = true;
         this.emotionsAndScoresList = [];
         this.loadingSpinner = true;
 
@@ -112,43 +110,9 @@ export class TextToEmotionComponent implements OnInit {
         this.textToEmotionService.getEmotionsMock().subscribe((res) => {
             const emotions = JSON.parse(JSON.stringify(res));
             this.emotionsNormalized = emotions.emotions_normalized;
-            this.emotionsScoresNormalized = this.convertObjectToListOfObjects(
-                this.emotionsNormalized
-            );
-            this.emotionScores = emotions.emotion_scores;
             this.statusLoaded = true;
-            for (const em of [this.emotionsNormalized]) {
-                const emotionHighest = Object.keys(
-                    this.emotionsNormalized
-                ).reduce((emotionPrev, emotionNext) =>
-                    this.emotionsNormalized[emotionPrev] >
-                    this.emotionsNormalized[emotionNext]
-                        ? emotionPrev
-                        : emotionNext
-                );
-                const emoji =
-                    emotionHighest === 'sadness'
-                        ? this.emojis.sadness
-                        : emotionHighest === 'joy'
-                        ? this.emojis.joy
-                        : emotionHighest === 'fear'
-                        ? this.emojis.fear
-                        : emotionHighest === 'surprise'
-                        ? this.emojis.surprise
-                        : emotionHighest === 'disgust'
-                        ? this.emojis.disgust
-                        : emotionHighest === 'anger'
-                        ? this.emojis.anger
-                        : this.emojis.neutral;
-                this.detectedEmotionScores = {
-                    emotion: emotionHighest,
-                    score: em[emotionHighest],
-                    emoji,
-                };
-
-                this.emotionsAndScoresList.push(this.detectedEmotionScores);
-                this.loadingSpinner = false;
-            }
+            this.loadingSpinner = false;
+            this.buttonClicked = true;
         });
 
         // Below code is for server communication
@@ -208,20 +172,5 @@ export class TextToEmotionComponent implements OnInit {
         //         console.log('something went wrong', err);
         //     }
         // );
-    }
-
-    convertObjectToListOfObjects(
-        obj: Record<string, any>
-    ): Record<string, any>[] {
-        const listOfObjects: Record<string, any>[] = [];
-
-        for (const key in obj) {
-            if (obj.hasOwnProperty(key)) {
-                const singleObj: Record<string, any> = {};
-                singleObj[key] = obj[key];
-                listOfObjects.push(singleObj);
-            }
-        }
-        return listOfObjects;
     }
 }

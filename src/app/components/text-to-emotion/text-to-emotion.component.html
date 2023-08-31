@@ -5,9 +5,6 @@
       Tell me what's on your <span class="underline decoration-sky-500">mind</span>, and I'll tell you what's in your
       <span class="underline decoration-pink-500">heart</span>.
     </p>
-
-
-
   </div>
 
   <mat-form-field class="item">
@@ -23,11 +20,11 @@
       (click)=" analyzeSentence()" [disabled]="!sentence" required>How
       do I
       feel?</button>
-
   </div>
+  <app-emotional-status *ngIf="buttonClicked" [emotionsNormalized]="emotionsNormalized">
+  </app-emotional-status>
 
 </form>
-
 
 <div *ngIf="loadingSpinner" class="spinner-wrapper">
   <mat-spinner></mat-spinner>
@@ -36,20 +33,9 @@
   <p class=" mat-headline-4" [ngClass]="{'mat-headline-4-mobilePortrait': ifHandsetPortrait}">Your emotional status</p>
   <p class="emotion-description" [ngClass]="{'emotion-description-mobilePortrait': ifHandsetPortrait}">
     {{emotionDescription}}</p>
-  <p>Emotion with score</p>
-  <div *ngFor=" let emo of emotionsAndScoresList">
-    <h4>{{emo.emotion}} <span [innerHTML]="emo.emoji"></span> {{emo.score | percent}}</h4>
-  </div>
   <div *ngIf="buttonClicked"><span class="material-icons animate-ping scale-150 text-red-500">
       favorite
     </span></div>
-</div>
-<div *ngFor="let emo of emotionsScoresNormalized">
-  <div class="emotion-bubble rounded-full bg-sky-300 flex justify-center items-center "
-    style=" height: 200px; width: 200px;">
-    <h2>{{emo}}</h2>
-  </div>
-
 </div>
 <div id="emotional-status"></div>
 <router-outlet></router-outlet>

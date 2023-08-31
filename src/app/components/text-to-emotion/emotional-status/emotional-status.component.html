@@ -1,0 +1,7 @@
+<div class="flex flex-col-reverse">
+  <canvas baseChart [data]="polarChartData" [options]="polarChartOptions" [type]="'polarArea'" class="chart">
+  </canvas>
+  <button class="self-center rounded text-sky text-xs underline mt-2" (click)="updateChartToColorBlindness()">
+    Click here for Color Blinded Chart
+  </button>
+</div>

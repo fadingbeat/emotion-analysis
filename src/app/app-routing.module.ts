@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { EmotionalStatusComponent } from './components/emotional-status/emotional-status.component';
+import { EmotionalStatusComponent } from './components/text-to-emotion/emotional-status/emotional-status.component';
 import { TextToEmotionComponent } from './components/text-to-emotion/text-to-emotion.component';
 
 import { CurrentRouteGuard } from './core/guards/current-route.guard';
