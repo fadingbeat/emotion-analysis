@@ -19,6 +19,18 @@ export class TextToEmotionService {
             console.log(error);
         }
     };
+    getColorsVisualizations = async (emotionName: string[]) => {
+        const url = `.netlify/functions/get-colors-visualizations?detectedEmotions=${emotionName}`;
+        try {
+            const { data } = await axios.get(url);
+            return data;
+        } catch (error) {
+            return {
+                statusCode: status,
+                body: JSON.stringify({ error }),
+            };
+        }
+    };
     getEmotionDescription = async (emotionName: string) => {
         const url = `.netlify/functions/get-emotion-description?emotion_name=${emotionName}`;
         try {

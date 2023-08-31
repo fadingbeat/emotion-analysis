@@ -10,3 +10,8 @@ export interface EmotionsNormalized {
     sadness: number;
     anger: number;
 }
+
+export interface EmotionColor {
+    emotionName: string;
+    colorValue: string[];
+}
