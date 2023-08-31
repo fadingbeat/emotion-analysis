@@ -34,11 +34,11 @@
                         ],
                         "allowedCommonJsDependencies": [
                             "once",
-                            "@octokit",
-                            "@octokit/app",
-                            "@octokit/oauth-app"
+                            "@canvasjs/angular-charts"
                         ],
-                        "scripts": []
+                        "scripts": [
+                            "node_modules/patternomaly/dist/patternomaly.js"
+                        ]
                     },
                     "configurations": {
                         "production": {
