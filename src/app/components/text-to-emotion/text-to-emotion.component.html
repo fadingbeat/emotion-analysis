@@ -26,16 +26,5 @@
 
 </form>
 
-<div *ngIf="loadingSpinner" class="spinner-wrapper">
-  <mat-spinner></mat-spinner>
-</div>
-<div class="mat-flex-status" *ngIf="statusLoaded" #emotions>
-  <p class=" mat-headline-4" [ngClass]="{'mat-headline-4-mobilePortrait': ifHandsetPortrait}">Your emotional status</p>
-  <p class="emotion-description" [ngClass]="{'emotion-description-mobilePortrait': ifHandsetPortrait}">
-    {{emotionDescription}}</p>
-  <div *ngIf="buttonClicked"><span class="material-icons animate-ping scale-150 text-red-500">
-      favorite
-    </span></div>
-</div>
-<div id="emotional-status"></div>
+<app-color-visualization [transformedColorsList]="transformedColorsList"></app-color-visualization>
 <router-outlet></router-outlet>

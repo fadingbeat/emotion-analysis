@@ -16,6 +16,7 @@ import { HeaderComponent } from './core/components/header/header.component';
 import { FooterComponent } from './core/components/footer/footer.component';
 import { HttpClientModule } from '@angular/common/http';
 import { NgChartsModule } from 'ng2-charts';
+import { ColorVisualizationComponent } from './components/color-visualization/color-visualization.component';
 
 @NgModule({
     declarations: [
@@ -25,6 +26,7 @@ import { NgChartsModule } from 'ng2-charts';
         ErrorDialogComponent,
         HeaderComponent,
         FooterComponent,
+        ColorVisualizationComponent,
     ],
     imports: [
         BrowserModule,

@@ -23,10 +23,13 @@ export class TextToEmotionComponent implements OnInit {
     userInput = '';
     description =
         'The application detects emotions based on given input and provides more info about the emotion and colors associated with it. You will be suggested with a guided visualization to help you deal with your feelings.The analyzer currently works with five emotions. You can either use analyzer for emotion detection, or if you already know what you are feeling, choose the emotion from the dropdown menu. ';
-    emotionsDetectedArray: [] = [];
-    emotionScores: number[] = [];
-    detectedEmotionScores: {};
-    emotionsAndScoresList: any = [];
+    filteredEmotions: Record<string, number> = {};
+    detectedEmotions: string[] = [];
+    detectedColors: any;
+    detectedColorsReplaced: any;
+    transformedColors: any;
+    transformedColorsList: any;
+    regex = '(?<==)(.|\n)*[^=;]';
     emotionDescription: '';
     statusLoaded = false;
     colorComponentLoaded = false;
@@ -53,7 +56,6 @@ export class TextToEmotionComponent implements OnInit {
     };
 
     emo = '&#128512';
-
     promptControl = new FormControl('');
     prompts: string[] = [
         'I am going to see my mom after two weeks.',
@@ -102,7 +104,6 @@ export class TextToEmotionComponent implements OnInit {
 
     analyzeSentence() {
         this.router.navigateByUrl('home');
-        this.emotionsAndScoresList = [];
         this.loadingSpinner = true;
 
         /* Mock function and values */
@@ -111,55 +112,39 @@ export class TextToEmotionComponent implements OnInit {
             const emotions = JSON.parse(JSON.stringify(res));
             this.emotionsNormalized = emotions.emotions_normalized;
             this.statusLoaded = true;
+
+            for (const key in this.emotionsNormalized) {
+                if (this.emotionsNormalized[key] > 0) {
+                    this.filteredEmotions[key] = this.emotionsNormalized[key];
+                }
+            }
+
+            this.detectedEmotions = Object.keys(this.filteredEmotions);
             this.loadingSpinner = false;
             this.buttonClicked = true;
+            this.getColorsVisualizations();
         });
 
-        // Below code is for server communication
+        // Below code is for server communication + add the logic from mock related to extracting only emotions that have a value greater than 0
         // this.textToEmotionService.getEmotions(this.sentence).then(
         //     (res) => {
+        //         console.log('res', res);
         //         this.emotionsNormalized = res.emotions_normalized;
-        //         this.emotionScores = res.emotion_scores;
         //         this.statusLoaded = true;
 
-        //         for (const em of [this.emotionsNormalized]) {
-        //             const emotionHighest = Object.keys(
-        //                 this.emotionsNormalized
-        //             ).reduce((emotionPrev, emotionNext) =>
-        //                 this.emotionsNormalized[emotionPrev] >
-        //                 this.emotionsNormalized[emotionNext]
-        //                     ? emotionPrev
-        //                     : emotionNext
-        //             );
-        //             const emoji =
-        //                 emotionHighest === 'sadness'
-        //                     ? this.emojis.sadness
-        //                     : emotionHighest === 'joy'
-        //                     ? this.emojis.joy
-        //                     : emotionHighest === 'fear'
-        //                     ? this.emojis.fear
-        //                     : emotionHighest === 'surprise'
-        //                     ? this.emojis.surprise
-        //                     : emotionHighest === 'disgust'
-        //                     ? this.emojis.disgust
-        //                     : emotionHighest === 'anger'
-        //                     ? this.emojis.anger
-        //                     : this.emojis.neutral;
-        //             this.detectedEmotionScores = {
-        //                 emotion: emotionHighest,
-        //                 score: em[emotionHighest],
-        //                 emoji,
-        //             };
-        //             this.emotionsAndScoresList.push(this.detectedEmotionScores);
-        //             this.loadingSpinner = false;
-
-        //             this.textToEmotionService
-        //                 .getEmotionDescription(emotionHighest)
-        //                 .then((emotionDescription) => {
-        //                     this.emotionDescription =
-        //                         emotionDescription.data.choices[0].text;
-        //                 });
+        //         for (const key in this.emotionsNormalized) {
+        //             if (this.emotionsNormalized[key] > 0) {
+        //                 this.filteredEmotions[key] =
+        //                     this.emotionsNormalized[key];
+        //             }
         //         }
+
+        //         this.detectedEmotions = Object.keys(this.filteredEmotions);
+
+        //         this.loadingSpinner = false;
+        //         this.buttonClicked = true;
+        //         this.getColorsVisualizations();
+
         //         this.sentence = '';
         //         this.inputName.nativeElement.value = '';
         //         document.getElementById('emotional-status')?.scrollIntoView({
@@ -173,4 +158,46 @@ export class TextToEmotionComponent implements OnInit {
         //     }
         // );
     }
+
+    getColorsVisualizations() {
+        console.log('detected emotions', this.detectedEmotions);
+        // mock ColorEmotion list of objects
+        this.transformedColorsList = [
+            { emotionName: 'joy', colorValue: ['yellow', 'orange', 'pink'] },
+            { emotionName: 'surprise', colorValue: ['blue', 'purple'] },
+            { emotionName: 'fear', colorValue: ['black', 'gray'] },
+        ];
+
+        // uncomment later for production
+        // this.textToEmotionService
+        //     .getColorsVisualizations(this.detectedEmotions)
+        //     .then((res) => {
+        //         const messageResponse = res.data.choices[0].message.content;
+        //         this.detectedColors = messageResponse.match(this.regex)[0];
+        //         this.detectedColorsReplaced = JSON.parse(this.detectedColors);
+        //         this.transformedColors = Object.entries(
+        //             this.detectedColorsReplaced
+        //         ).map(([emotion, colors]) => ({
+        //             [emotion]: colors,
+        //         }));
+        //         this.transformDetectedColors();
+        //     });
+    }
+
+    // uncomment later for production + adjust if needed after displaying data in mat card
+
+    // transformDetectedColors = () => {
+    //     this.transformedColorsList = this.transformedColors.map(
+    //         (emotionObject: { [x: string]: any }) => {
+    //             const emotionName = Object.keys(emotionObject)[0];
+    //             const colorValue = emotionObject[emotionName];
+    //             return {
+    //                 emotionName,
+    //                 colorValue,
+    //             };
+    //         }
+    //     );
+    //     console.log('transformed list', this.transformedColorsList);
+    //     return this.transformedColorsList;
+    // };
 }
