@@ -108,81 +108,81 @@ export class TextToEmotionComponent implements OnInit {
 
         /* Mock function and values */
 
-        this.textToEmotionService.getEmotionsMock().subscribe((res) => {
-            const emotions = JSON.parse(JSON.stringify(res));
-            this.emotionsNormalized = emotions.emotions_normalized;
-            this.statusLoaded = true;
+        // this.textToEmotionService.getEmotionsMock().subscribe((res) => {
+        //     const emotions = JSON.parse(JSON.stringify(res));
+        //     this.emotionsNormalized = emotions.emotions_normalized;
+        //     this.statusLoaded = true;
 
-            for (const key in this.emotionsNormalized) {
-                if (this.emotionsNormalized[key] > 0) {
-                    this.filteredEmotions[key] = this.emotionsNormalized[key];
-                }
-            }
+        //     for (const key in this.emotionsNormalized) {
+        //         if (this.emotionsNormalized[key] > 0) {
+        //             this.filteredEmotions[key] = this.emotionsNormalized[key];
+        //         }
+        //     }
 
-            this.detectedEmotions = Object.keys(this.filteredEmotions);
-            this.loadingSpinner = false;
-            this.buttonClicked = true;
-            this.getColorsVisualizations();
-        });
+        //     this.detectedEmotions = Object.keys(this.filteredEmotions);
+        //     this.loadingSpinner = false;
+        //     this.buttonClicked = true;
+        //     // this.getColorsVisualizations();
+        // });
 
         // Below code is for server communication + add the logic from mock related to extracting only emotions that have a value greater than 0
-        // this.textToEmotionService.getEmotions(this.sentence).then(
-        //     (res) => {
-        //         console.log('res', res);
-        //         this.emotionsNormalized = res.emotions_normalized;
-        //         this.statusLoaded = true;
+        this.textToEmotionService.getEmotions(this.sentence).then(
+            (res) => {
+                console.log('res', res);
+                this.emotionsNormalized = res.emotions_normalized;
+                this.statusLoaded = true;
 
-        //         for (const key in this.emotionsNormalized) {
-        //             if (this.emotionsNormalized[key] > 0) {
-        //                 this.filteredEmotions[key] =
-        //                     this.emotionsNormalized[key];
-        //             }
-        //         }
+                for (const key in this.emotionsNormalized) {
+                    if (this.emotionsNormalized[key] > 0) {
+                        this.filteredEmotions[key] =
+                            this.emotionsNormalized[key];
+                    }
+                }
 
-        //         this.detectedEmotions = Object.keys(this.filteredEmotions);
+                this.detectedEmotions = Object.keys(this.filteredEmotions);
 
-        //         this.loadingSpinner = false;
-        //         this.buttonClicked = true;
-        //         this.getColorsVisualizations();
+                this.loadingSpinner = false;
+                this.buttonClicked = true;
+                // this.getColorsVisualizations();
 
-        //         this.sentence = '';
-        //         this.inputName.nativeElement.value = '';
-        //         document.getElementById('emotional-status')?.scrollIntoView({
-        //             behavior: 'smooth',
-        //             block: 'end',
-        //             inline: 'nearest',
-        //         });
-        //     },
-        //     (err) => {
-        //         console.log('something went wrong', err);
-        //     }
-        // );
+                this.sentence = '';
+                this.inputName.nativeElement.value = '';
+                document.getElementById('emotional-status')?.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'end',
+                    inline: 'nearest',
+                });
+            },
+            (err) => {
+                console.log('something went wrong', err);
+            }
+        );
     }
 
-    getColorsVisualizations() {
-        console.log('detected emotions', this.detectedEmotions);
-        // mock ColorEmotion list of objects
-        this.transformedColorsList = [
-            { emotionName: 'joy', colorValue: ['yellow', 'orange', 'pink'] },
-            { emotionName: 'surprise', colorValue: ['blue', 'purple'] },
-            { emotionName: 'fear', colorValue: ['black', 'gray'] },
-        ];
+    // getColorsVisualizations() {
+    //     console.log('detected emotions', this.detectedEmotions);
+    //     // mock ColorEmotion list of objects
+    //     // this.transformedColorsList = [
+    //     //     { emotionName: 'joy', colorValue: ['yellow', 'orange', 'pink'] },
+    //     //     { emotionName: 'surprise', colorValue: ['blue', 'purple'] },
+    //     //     { emotionName: 'fear', colorValue: ['black', 'gray'] },
+    //     // ];
 
-        // uncomment later for production
-        // this.textToEmotionService
-        //     .getColorsVisualizations(this.detectedEmotions)
-        //     .then((res) => {
-        //         const messageResponse = res.data.choices[0].message.content;
-        //         this.detectedColors = messageResponse.match(this.regex)[0];
-        //         this.detectedColorsReplaced = JSON.parse(this.detectedColors);
-        //         this.transformedColors = Object.entries(
-        //             this.detectedColorsReplaced
-        //         ).map(([emotion, colors]) => ({
-        //             [emotion]: colors,
-        //         }));
-        //         this.transformDetectedColors();
-        //     });
-    }
+    //     // uncomment later for production
+    //     this.textToEmotionService
+    //         .getColorsVisualizations(this.detectedEmotions)
+    //         .then((res) => {
+    //             const messageResponse = res.data.choices[0].message.content;
+    //             this.detectedColors = messageResponse.match(this.regex)[0];
+    //             this.detectedColorsReplaced = JSON.parse(this.detectedColors);
+    //             this.transformedColors = Object.entries(
+    //                 this.detectedColorsReplaced
+    //             ).map(([emotion, colors]) => ({
+    //                 [emotion]: colors,
+    //             }));
+    //             this.transformDetectedColors();
+    //         });
+    // }
 
     // uncomment later for production + adjust if needed after displaying data in mat card
 
