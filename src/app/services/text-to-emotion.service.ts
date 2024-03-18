@@ -42,7 +42,7 @@ export class TextToEmotionService {
     };
 
     // we use this method to get our mocked data
-    getEmotionsMock = () => {
-        return this.http.get(`${environment.base_url}/api/analyze-sentence`);
-    };
+    // getEmotionsMock = () => {
+    //     return this.http.get(`${environment.base_url}/api/analyze-sentence`);
+    // };
 }
