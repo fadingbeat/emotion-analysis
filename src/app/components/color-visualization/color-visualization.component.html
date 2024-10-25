@@ -9,8 +9,8 @@
     {{transformedColorsList | json}}</p> -->
 
 <div *ngIf="tColorList" class="mat-flex-color">
-  <div *ngFor="let emotioncolor of tColorList">
-    <mat-card class="example-card">
+  <div *ngFor="let emotioncolor of tColorList; let i = index">
+    <mat-card [ngStyle]="{'background-color': emotioncolor.selectedColor}" class="example-card">
       <mat-card-header>
 
         <mat-card-title>{{emotioncolor.emotionName}}</mat-card-title>
@@ -18,9 +18,10 @@
           <div class="color-dropdown">
             <mat-form-field>
               <mat-label class="text-pink-400">Choose color</mat-label>
-              <mat-select #emotioncolor [value]="emotioncolor.colorValue[0]">
-                <mat-option *ngFor="let colors of emotioncolor.colorValue" [value]="colors">
-                  {{colors}}
+              <mat-select #selectRef #emotioncolor [(value)]="emotioncolor.selectedColor"
+                (selectionChange)="onColorChange($event.value, i)" (focused)="false">
+                <mat-option *ngFor="let color of emotioncolor.colorOptions" [value]="color">
+                  {{color}}
                 </mat-option>
               </mat-select>
 

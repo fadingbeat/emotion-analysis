@@ -6,7 +6,10 @@ import {
     OnChanges,
     OnInit,
     SimpleChanges,
+    ViewChild,
+    ViewChildren,
 } from '@angular/core';
+import { MatSelect } from '@angular/material/select';
 
 @Component({
     selector: 'app-color-visualization',
@@ -18,12 +21,16 @@ export class ColorVisualizationComponent
 {
     constructor(private responsive: BreakpointObserver) {}
     @Input() transformedColorsList: any;
+    @ViewChildren('selectRef') selectRef: MatSelect;
     ifHandsetPortrait = false;
     ifHandsetLandscape = false;
     ifWeb = false;
     loadingSpinner = false;
     defaultSelectColorList = [];
     tColorList: any;
+    card: any;
+    activeMatCardEl: any;
+    selectedColor: string = 'white';
     ngOnInit() {
         this.loadingSpinner = true;
         this.responsive
@@ -54,14 +61,15 @@ export class ColorVisualizationComponent
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        console.log(changes.transformedColorsList);
         this.tColorList = changes.transformedColorsList.currentValue;
         if (this.tColorList) {
             for (const c of this.tColorList) {
-                console.log(c.colorValue);
             }
             this.defaultSelectColorList = this.tColorList;
-            console.log('default list', this.defaultSelectColorList);
         }
+    }
+
+    onColorChange(selectedColor: string, cardIndex: number) {
+        this.tColorList[cardIndex].selectedColor = selectedColor;
     }
 }

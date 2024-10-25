@@ -122,13 +122,12 @@ export class TextToEmotionComponent implements OnInit {
         //     this.detectedEmotions = Object.keys(this.filteredEmotions);
         //     this.loadingSpinner = false;
         //     this.buttonClicked = true;
-        //     // this.getColorsVisualizations();
+        //     this.getColorsVisualizations();
         // });
 
         // Below code is for server communication + add the logic from mock related to extracting only emotions that have a value greater than 0
         this.textToEmotionService.getEmotions(this.sentence).then(
             (res) => {
-                console.log('res', res);
                 this.emotionsNormalized = res.emotions_normalized;
                 this.statusLoaded = true;
 
@@ -143,7 +142,7 @@ export class TextToEmotionComponent implements OnInit {
 
                 this.loadingSpinner = false;
                 this.buttonClicked = true;
-                // this.getColorsVisualizations();
+                this.getColorsVisualizations();
 
                 this.sentence = '';
                 this.inputName.nativeElement.value = '';
@@ -159,30 +158,41 @@ export class TextToEmotionComponent implements OnInit {
         );
     }
 
-    // getColorsVisualizations() {
-    //     console.log('detected emotions', this.detectedEmotions);
-    //     // mock ColorEmotion list of objects
-    //     // this.transformedColorsList = [
-    //     //     { emotionName: 'joy', colorValue: ['yellow', 'orange', 'pink'] },
-    //     //     { emotionName: 'surprise', colorValue: ['blue', 'purple'] },
-    //     //     { emotionName: 'fear', colorValue: ['black', 'gray'] },
-    //     // ];
+    getColorsVisualizations() {
+        // mock ColorEmotion list of objects
+        this.transformedColorsList = [
+            {
+                emotionName: 'joy',
+                colorOptions: ['yellow', 'orange', 'pink'],
+                selectedValue: 'yellow',
+            },
+            {
+                emotionName: 'surprise',
+                colorOptions: ['blue', 'purple'],
+                selectedValue: 'blue',
+            },
+            {
+                emotionName: 'fear',
+                colorOptions: ['black', 'gray'],
+                selectedValue: 'black',
+            },
+        ];
 
-    //     // uncomment later for production
-    //     this.textToEmotionService
-    //         .getColorsVisualizations(this.detectedEmotions)
-    //         .then((res) => {
-    //             const messageResponse = res.data.choices[0].message.content;
-    //             this.detectedColors = messageResponse.match(this.regex)[0];
-    //             this.detectedColorsReplaced = JSON.parse(this.detectedColors);
-    //             this.transformedColors = Object.entries(
-    //                 this.detectedColorsReplaced
-    //             ).map(([emotion, colors]) => ({
-    //                 [emotion]: colors,
-    //             }));
-    //             this.transformDetectedColors();
-    //         });
-    // }
+        // uncomment later for production
+        // this.textToEmotionService
+        //     .getColorsVisualizations(this.detectedEmotions)
+        //     .then((res) => {
+        //         const messageResponse = res.data.choices[0].message.content;
+        //         this.detectedColors = messageResponse.match(this.regex)[0];
+        //         this.detectedColorsReplaced = JSON.parse(this.detectedColors);
+        //         this.transformedColors = Object.entries(
+        //             this.detectedColorsReplaced
+        //         ).map(([emotion, colors]) => ({
+        //             [emotion]: colors,
+        //         }));
+        //         this.transformDetectedColors();
+        //     });
+    }
 
     // uncomment later for production + adjust if needed after displaying data in mat card
 

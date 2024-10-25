@@ -5,6 +5,7 @@ require('dotenv').config();
 
 export const handler: Handler = async (event) => {
     const API_SECRET = process.env.RAPID_API_KEY;
+    const base_url = process.env.BASE_URL;
     const apiGuard: string = API_SECRET !== undefined ? API_SECRET : '';
     const myHeaders = new Headers();
     myHeaders.append('apikey', apiGuard);
@@ -15,7 +16,7 @@ export const handler: Handler = async (event) => {
 
     const options = {
         method: 'GET',
-        url: 'https://twinword-emotion-analysis-v1.p.rapidapi.com/analyze/',
+        url: base_url,
         params: {
             text: prompt,
         },
