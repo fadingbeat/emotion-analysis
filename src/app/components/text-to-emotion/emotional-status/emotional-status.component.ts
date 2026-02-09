@@ -3,6 +3,12 @@ import { Chart, ChartData, ChartEvent } from 'chart.js';
 import { draw, generate } from 'patternomaly';
 import pattern from 'patternomaly';
 import { BaseChartDirective } from 'ng2-charts';
+// import { EmotionsNormalized } from 'src/app/core/models/emotions';
+import {
+    EmotionsNormalized,
+    getChartColors,
+    CHART_LABELS,
+} from 'src/app/core/models/types';
 
 @Component({
     selector: 'app-emotional-status',
@@ -12,10 +18,14 @@ import { BaseChartDirective } from 'ng2-charts';
 export class EmotionalStatusComponent implements OnInit {
     constructor() {}
     @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
-    @Input() emotionsNormalized: any;
+    @Input() emotionsNormalized: EmotionsNormalized;
     public polarChartOptions = { aspectRatio: 2.5 };
     public polarChartData: ChartData<'polarArea'>;
     buttonClicked = false;
+
+    // ✅ Get colors from unified source
+    chartColors = getChartColors();
+
     colorBlindnessChart = [
         pattern.draw('square', 'rgb(252, 15, 3)'),
         pattern.draw('ring', 'rgb(75, 192, 192)'),
@@ -37,7 +47,7 @@ export class EmotionalStatusComponent implements OnInit {
 
     displayEmotionChart() {
         this.polarChartData = {
-            labels: ['Anger', 'Disgust', 'Fear', 'Joy', 'Sadness', 'Surprise'],
+            labels: CHART_LABELS,
             datasets: [
                 {
                     label: 'Score',
@@ -49,14 +59,7 @@ export class EmotionalStatusComponent implements OnInit {
                         this.emotionsNormalized.sadness,
                         this.emotionsNormalized.surprise,
                     ],
-                    backgroundColor: [
-                        'rgb(252, 15, 3)',
-                        'rgb(75, 192, 192)',
-                        'rgb(201, 203, 207)',
-                        'rgb(255, 205, 86)',
-                        'rgb(54, 162, 235)',
-                        'rgb(255, 99, 132)',
-                    ],
+                    backgroundColor: this.chartColors,
                 },
             ],
         };

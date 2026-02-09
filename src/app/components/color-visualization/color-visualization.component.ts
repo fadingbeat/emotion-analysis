@@ -10,6 +10,8 @@ import {
     ViewChildren,
 } from '@angular/core';
 import { MatSelect } from '@angular/material/select';
+import { HEX_TO_COLOR_NAME } from 'src/app/core/models/types';
+import { EmotionDropdownOption } from 'src/app/core/models/emotions';
 
 @Component({
     selector: 'app-color-visualization',
@@ -20,16 +22,17 @@ export class ColorVisualizationComponent
     implements OnInit, AfterViewInit, OnChanges
 {
     constructor(private responsive: BreakpointObserver) {}
-    @Input() transformedColorsList: any;
+    @Input() transformedColorsList!: EmotionDropdownOption[];
     @ViewChildren('selectRef') selectRef: MatSelect;
     ifHandsetPortrait = false;
     ifHandsetLandscape = false;
     ifWeb = false;
     loadingSpinner = false;
-    defaultSelectColorList = [];
-    tColorList: any;
-    card: any;
-    activeMatCardEl: any;
+    // defaultSelectColorList = [];
+    // tColorList: any;
+    tColorList: EmotionDropdownOption[] = [];
+    defaultSelectColorList: EmotionDropdownOption[] = [];
+
     selectedColor: string = 'white';
     ngOnInit() {
         this.loadingSpinner = true;
@@ -61,15 +64,21 @@ export class ColorVisualizationComponent
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        this.tColorList = changes.transformedColorsList.currentValue;
+        if (changes['transformedColorsList'])
+            this.tColorList = changes.transformedColorsList.currentValue;
         if (this.tColorList) {
-            for (const c of this.tColorList) {
-            }
             this.defaultSelectColorList = this.tColorList;
         }
     }
 
     onColorChange(selectedColor: string, cardIndex: number) {
-        this.tColorList[cardIndex].selectedColor = selectedColor;
+        const hexCode = Object.entries(HEX_TO_COLOR_NAME).find(
+            ([_, name]) => name === selectedColor,
+        )?.[0];
+
+        if (hexCode) {
+            this.tColorList[cardIndex].selectedValue = selectedColor;
+            this.tColorList[cardIndex].selectedHex = hexCode;
+        }
     }
 }
