@@ -8,6 +8,7 @@ import {
     Emotion,
     EmotionsNormalized,
     EMOTION_COLOR_MAP,
+    EmotionAnalysisError,
     HEX_TO_COLOR_NAME,
     getColorName,
 } from 'src/app/core/models/types';
@@ -106,9 +107,56 @@ export class TextToEmotionComponent implements OnInit {
                     this.ifWeb = true;
                 }
             });
+        // this.testEmotionService();
+    }
+
+    // ✅ Test function
+    async testEmotionService() {
+        console.log('🧪 Testing EmotionAnalysisError handling...');
+
+        try {
+            // Test 1: Empty sentence (should throw error)
+            await this.textToEmotionService.getEmotions('');
+        } catch (error) {
+            if (error instanceof EmotionAnalysisError) {
+                console.log('✅ Test 1 PASSED: Caught EmotionAnalysisError');
+                console.log('   Code:', error.code); // Should be 'INVALID_INPUT'
+                console.log('   Message:', error.message);
+            } else {
+                console.log('❌ Test 1 FAILED: Wrong error type');
+            }
+        }
+
+        try {
+            // Test 2: Valid sentence
+            const result = await this.textToEmotionService.getEmotions(
+                'I am very happy with my progress today',
+            );
+            console.log('✅ Test 2 PASSED: Got valid Emotion response');
+            console.log(
+                '   Result has emotions_normalized:',
+                'emotions_normalized' in result,
+            );
+            console.log('   Joy score:', result.emotions_normalized.joy);
+        } catch (error) {
+            console.log('❌ Test 2 FAILED:', error);
+        }
     }
 
     analyzeSentence() {
+        // ✅ Validate before API call
+        if (!this.sentence || this.sentence.trim().length === 0) {
+            this.showErrorNotification('Please enter a sentence to analyze');
+            return; // Don't call API
+        }
+
+        // ✅ Optional: Add word count check
+        const wordCount = this.sentence.trim().split(/\s+/).length;
+        if (wordCount < 5) {
+            this.showErrorNotification('Please enter at least 5 words');
+            return;
+        }
+
         this.router.navigateByUrl('home');
         this.loadingSpinner = true;
 
@@ -132,37 +180,48 @@ export class TextToEmotionComponent implements OnInit {
         // });
 
         // Below code is for server communication + add the logic from mock related to extracting only emotions that have a value greater than 0
-        this.textToEmotionService.getEmotions(this.sentence).then(
-            (res) => {
-                this.emotionsNormalized = res.emotions_normalized;
-                this.statusLoaded = true;
+        (this.textToEmotionService.getEmotions(this.sentence).then((res) => {
+            this.emotionsNormalized = res.emotions_normalized;
+            this.statusLoaded = true;
 
-                for (const [key, score] of Object.entries(
-                    this.emotionsNormalized,
-                )) {
-                    if (score > 0) {
-                        this.filteredEmotions[key] = score;
-                    }
+            for (const [key, score] of Object.entries(
+                this.emotionsNormalized,
+            )) {
+                if (score > 0) {
+                    this.filteredEmotions[key] = score;
                 }
+            }
 
-                this.detectedEmotions = Object.keys(this.filteredEmotions);
+            this.detectedEmotions = Object.keys(this.filteredEmotions);
 
+            this.loadingSpinner = false;
+            this.buttonClicked = true;
+            this.getColorsVisualizations();
+
+            this.sentence = '';
+            this.inputName.nativeElement.value = '';
+            document.getElementById('emotional-status')?.scrollIntoView({
+                behavior: 'smooth',
+                block: 'end',
+                inline: 'nearest',
+            });
+        }).catch,
+            (error: unknown) => {
+                // ✅ Handle errors properly
+                if (error instanceof EmotionAnalysisError) {
+                    console.error(`[${error.code}] ${error.message}`);
+                    this.showErrorNotification(error.message);
+                } else {
+                    console.error('Unexpected error:', error);
+                    this.showErrorNotification('An unexpected error occurred');
+                }
                 this.loadingSpinner = false;
-                this.buttonClicked = true;
-                this.getColorsVisualizations();
+            });
+    }
 
-                this.sentence = '';
-                this.inputName.nativeElement.value = '';
-                document.getElementById('emotional-status')?.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'end',
-                    inline: 'nearest',
-                });
-            },
-            (err) => {
-                console.log('something went wrong', err);
-            },
-        );
+    showErrorNotification(message: string) {
+        // Show error to user (toast, snackbar, etc.)
+        console.log('Error:', message);
     }
 
     // NEW WAY (type-safe)

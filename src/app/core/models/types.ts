@@ -49,8 +49,12 @@ export function getColorName(hexCode: string): string {
     return HEX_TO_COLOR_NAME[hexCode] || hexCode; // Fallback to hex if not found
 }
 
+export type ReadonlyEmotionColorMap = Readonly<
+    Record<EmotionType, EmotionColorConfig>
+>;
+
 // ✅ The mock database — your color/emotion/visualization data
-export const EMOTION_COLOR_MAP: Record<EmotionType, EmotionColorConfig> = {
+export const EMOTION_COLOR_MAP: ReadonlyEmotionColorMap = {
     [EmotionType.JOY]: {
         emotionName: 'Joy',
         primaryColor: '#FFD700', // Gold
@@ -140,3 +144,38 @@ export const CHART_LABELS = [
     'Sadness',
     'Surprise',
 ];
+
+// ✅ Type guard for Emotion response
+export function isValidEmotionResponse(data: unknown): data is Emotion {
+    if (!data || typeof data !== 'object') return false;
+
+    const obj = data as Record<string, unknown>;
+    if (!('emotions_normalized' in obj)) return false;
+
+    const emotionsNormalized = obj.emotions_normalized;
+    if (!emotionsNormalized || typeof emotionsNormalized !== 'object')
+        return false;
+
+    const emotions = emotionsNormalized as Record<string, unknown>;
+
+    // Check all 6 emotions exist and are numbers
+    return (
+        typeof emotions.joy === 'number' &&
+        typeof emotions.sadness === 'number' &&
+        typeof emotions.anger === 'number' &&
+        typeof emotions.fear === 'number' &&
+        typeof emotions.disgust === 'number' &&
+        typeof emotions.surprise === 'number'
+    );
+}
+
+// ✅ Custom error type (we talked about this before)
+export class EmotionAnalysisError extends Error {
+    constructor(
+        public code: 'INVALID_INPUT' | 'API_ERROR' | 'INVALID_RESPONSE',
+        message: string,
+    ) {
+        super(message);
+        this.name = 'EmotionAnalysisError';
+    }
+}

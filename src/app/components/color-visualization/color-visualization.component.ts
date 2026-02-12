@@ -28,8 +28,6 @@ export class ColorVisualizationComponent
     ifHandsetLandscape = false;
     ifWeb = false;
     loadingSpinner = false;
-    // defaultSelectColorList = [];
-    // tColorList: any;
     tColorList: EmotionDropdownOption[] = [];
     defaultSelectColorList: EmotionDropdownOption[] = [];
 

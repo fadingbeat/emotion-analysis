@@ -1,48 +1,97 @@
 import { Injectable } from '@angular/core';
-import axios from 'axios';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
-import { from } from 'rxjs';
+import axios from 'axios';
+import { Emotion } from 'src/app/core/models/types';
+import {
+    isValidEmotionResponse,
+    EmotionAnalysisError,
+} from 'src/app/core/models/types';
 
 @Injectable({
     providedIn: 'root',
 })
 export class TextToEmotionService {
     constructor(private http: HttpClient) {}
+
     public sentence = '';
-    getEmotions = async (sentence: string) => {
-        const url = `.netlify/functions/analyze-sentence?prompt=${sentence}`;
-        try {
-            const { data } = await axios.get(url);
-            return data;
-        } catch (error) {
-            console.log(error);
+
+    // ✅ Now returns typed Emotion or throws error
+    getEmotions = async (sentence: string): Promise<Emotion> => {
+        if (!sentence || sentence.trim().length === 0) {
+            throw new EmotionAnalysisError(
+                'INVALID_INPUT',
+                'Sentence cannot be empty',
+            );
         }
-    };
-    getColorsVisualizations = async (emotionName: string[]) => {
-        const url = `.netlify/functions/get-colors-visualizations?detectedEmotions=${emotionName}`;
+
+        const url = `.netlify/functions/analyze-sentence?prompt=${encodeURIComponent(sentence)}`;
+
         try {
             const { data } = await axios.get(url);
-            return data;
+
+            // ✅ Validate response with type guard
+            if (!isValidEmotionResponse(data)) {
+                throw new EmotionAnalysisError(
+                    'INVALID_RESPONSE',
+                    'API returned invalid emotion data. Expected emotions_normalized object with all 6 emotions.',
+                );
+            }
+
+            return data; // ✅ TypeScript knows this is Emotion type
         } catch (error) {
-            return {
-                statusCode: status,
-                body: JSON.stringify({ error }),
-            };
-        }
-    };
-    getEmotionDescription = async (emotionName: string) => {
-        const url = `.netlify/functions/get-emotion-description?emotion_name=${emotionName}`;
-        try {
-            const { data } = await axios.get(url);
-            return data;
-        } catch (error) {
-            console.log(error);
+            if (error instanceof EmotionAnalysisError) {
+                throw error; // Re-throw our custom error
+            }
+
+            throw new EmotionAnalysisError(
+                'API_ERROR',
+                `Failed to analyze emotions: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            );
         }
     };
 
-    // we use this method to get our mocked data
-    // getEmotionsMock = () => {
-    //     return this.http.get(`${environment.base_url}/api/analyze-sentence`);
-    // };
+    // ✅ Similar pattern for other methods
+    getColorsVisualizations = async (emotionName: string[]): Promise<any> => {
+        // Validate input
+        if (!Array.isArray(emotionName) || emotionName.length === 0) {
+            throw new EmotionAnalysisError(
+                'INVALID_INPUT',
+                'At least one emotion name is required',
+            );
+        }
+
+        const url = `.netlify/functions/get-colors-visualizations?detectedEmotions=${emotionName.join(',')}`;
+
+        try {
+            const { data } = await axios.get(url);
+            // ✅ Add validation for color data if needed
+            return data;
+        } catch (error) {
+            throw new EmotionAnalysisError(
+                'API_ERROR',
+                `Failed to get color visualizations: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            );
+        }
+    };
+
+    getEmotionDescription = async (emotionName: string): Promise<any> => {
+        if (!emotionName || emotionName.trim().length === 0) {
+            throw new EmotionAnalysisError(
+                'INVALID_INPUT',
+                'Emotion name cannot be empty',
+            );
+        }
+
+        const url = `.netlify/functions/get-emotion-description?emotion_name=${encodeURIComponent(emotionName)}`;
+
+        try {
+            const { data } = await axios.get(url);
+            return data;
+        } catch (error) {
+            throw new EmotionAnalysisError(
+                'API_ERROR',
+                `Failed to get emotion description: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            );
+        }
+    };
 }

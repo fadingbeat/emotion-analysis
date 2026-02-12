@@ -8,16 +8,17 @@
   </div>
 
   <mat-form-field class="item">
+    <!-- <label for="emotion-input">Type here what's on your mind:</label> -->
     <mat-hint>Describe your feelings</mat-hint>
     <mat-label><span class="animation-pulse text-pink-400">Type here ...</span></mat-label>
-    <input matInput placeholder="My boss told me that my problem-solving skills have improved lately"
+    <input id="emotion-input" matInput placeholder="My boss told me that my problem-solving skills have improved lately"
       [formControl]="promptControl" [(ngModel)]="sentence" #prompt>
   </mat-form-field>
   <mat-hint hidden [ngClass]="{'matHintMobilePortrait': ifWeb}">{{userInput}}</mat-hint>
 
   <div class="mat-button ">
     <button class="rounded bg-pink-600 text-white hover:bg-pink-500 disabled:opacity-75 py-2 px-2 "
-      (click)=" analyzeSentence()" [disabled]="!sentence" required>How
+      (click)=" analyzeSentence()" required>How
       do I
       feel?</button>
   </div>
