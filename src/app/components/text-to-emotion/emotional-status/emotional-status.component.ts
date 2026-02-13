@@ -1,4 +1,11 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import {
+    Component,
+    Input,
+    OnInit,
+    OnChanges,
+    SimpleChanges,
+    ViewChild,
+} from '@angular/core';
 import { Chart, ChartData, ChartEvent } from 'chart.js';
 import { draw, generate } from 'patternomaly';
 import pattern from 'patternomaly';
@@ -19,6 +26,7 @@ export class EmotionalStatusComponent implements OnInit {
     constructor() {}
     @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
     @Input() emotionsNormalized: EmotionsNormalized;
+    @Input() statusLoaded!: boolean;
     public polarChartOptions = { aspectRatio: 2.5 };
     public polarChartData: ChartData<'polarArea'>;
     buttonClicked = false;
@@ -37,6 +45,12 @@ export class EmotionalStatusComponent implements OnInit {
 
     ngOnInit() {
         this.displayEmotionChart();
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes['emotionsNormalized'] && this.statusLoaded) {
+            this.displayEmotionChart(); // Pozovi kada se emotionsNormalized promijeni
+        }
     }
 
     updateChartToColorBlindness() {

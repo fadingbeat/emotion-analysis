@@ -144,6 +144,11 @@ export class TextToEmotionComponent implements OnInit {
     }
 
     analyzeSentence() {
+        this.statusLoaded = false;
+        this.emotionsNormalized = {} as EmotionsNormalized;
+        this.filteredEmotions = {};
+        this.detectedEmotions = [];
+        this.transformedColorsList = [];
         // ✅ Validate before API call
         if (!this.sentence || this.sentence.trim().length === 0) {
             this.showErrorNotification('Please enter a sentence to analyze');
@@ -157,7 +162,6 @@ export class TextToEmotionComponent implements OnInit {
             return;
         }
 
-        this.router.navigateByUrl('home');
         this.loadingSpinner = true;
 
         /* Mock function and values */
@@ -205,6 +209,7 @@ export class TextToEmotionComponent implements OnInit {
                 block: 'end',
                 inline: 'nearest',
             });
+            this.router.navigateByUrl('home');
         }).catch,
             (error: unknown) => {
                 // ✅ Handle errors properly
