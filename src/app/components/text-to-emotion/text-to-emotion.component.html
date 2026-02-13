@@ -1,31 +1,52 @@
-<form class="mat-flex-form">
-  <div class=" mat-headline-6">
-    <p class="font-sans text-4xl pt-6 pb-8 tracking-tighter"
-      [ngClass]="{'appDescriptionPortrait': ifHandsetPortrait, 'appDescriptionLandscape': ifHandsetLandscape}">
-      Tell me what's on your <span class="underline decoration-sky-500">mind</span>, and I'll tell you what's in your
-      <span class="underline decoration-pink-500">heart</span>.
-    </p>
-  </div>
+<form class="w-full  bg-gray-50">
 
-  <mat-form-field class="item">
-    <!-- <label for="emotion-input">Type here what's on your mind:</label> -->
-    <mat-hint>Describe your feelings</mat-hint>
-    <mat-label><span class="animation-pulse text-pink-400">Type here ...</span></mat-label>
-    <input id="emotion-input" matInput placeholder="My boss told me that my problem-solving skills have improved lately"
-      [formControl]="promptControl" [(ngModel)]="sentence" #prompt>
-  </mat-form-field>
-  <mat-hint hidden [ngClass]="{'matHintMobilePortrait': ifWeb}">{{userInput}}</mat-hint>
+  <!-- Hero Section -->
+  <section class="w-full px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 text-center leading-tight tracking-tight">
+        Tell me what's on your <span class="text-sky-500 underline decoration-sky-500 decoration-2">mind</span>,
+        <br class="hidden sm:block" />
+        and I'll tell you what's in your <span
+          class="text-pink-500 underline decoration-pink-500 decoration-2">heart</span>.
+      </h1>
+    </div>
+  </section>
 
-  <div class="mat-button ">
-    <button class="rounded bg-pink-600 text-white hover:bg-pink-500 disabled:opacity-75 py-2 px-2 "
-      (click)=" analyzeSentence()" required>How
-      do I
-      feel?</button>
-  </div>
-  <app-emotional-status *ngIf="buttonClicked" [emotionsNormalized]="emotionsNormalized" [statusLoaded]="statusLoaded">
+  <!-- Input Section -->
+  <section class="w-full px-4 sm:px-6 lg:px-8 pb-12 sm:pb-16">
+    <div class="max-w-2xl mx-auto space-y-6">
+
+      <mat-form-field class="w-full">
+        <mat-label>
+          <span class="animation-pulse text-pink-400">What's on your mind?</span>
+        </mat-label>
+        <textarea id="emotion-input" matInput [(ngModel)]="sentence" [formControl]="promptControl"
+          placeholder="Example: My boss told me that my problem-solving skills have improved lately" rows="4"
+          class="resize-none" #prompt>
+        </textarea>
+        <mat-hint>Describe your feelings in at least 5 words</mat-hint>
+      </mat-form-field>
+
+      <div class="flex justify-center sm:justify-start">
+        <button (click)="analyzeSentence()" class="bg-pink-600 hover:bg-pink-700 text-white font-semibold 
+                 py-3 px-8 rounded-lg shadow-md hover:shadow-lg transition-all duration-200
+                 disabled:opacity-50 disabled:cursor-not-allowed">
+          How do I feel?
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Chart Section -->
+  <app-emotional-status *ngIf="buttonClicked" [emotionsNormalized]="emotionsNormalized" [statusLoaded]="statusLoaded"
+    class="w-full px-4 sm:px-6 lg:px-8 pb-12 sm:pb-16">
   </app-emotional-status>
-
 </form>
 
-<app-color-visualization [transformedColorsList]="transformedColorsList"></app-color-visualization>
+<!-- Dropdowns Section (Color Visualization) -->
+<app-color-visualization [transformedColorsList]="transformedColorsList" class="w-full px-4 sm:px-6 lg:px-8 pb-16">
+</app-color-visualization>
+
+
 <router-outlet></router-outlet>

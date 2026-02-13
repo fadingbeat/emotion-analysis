@@ -31,6 +31,9 @@ export class EmotionalStatusComponent implements OnInit {
     public polarChartData: ChartData<'polarArea'>;
     buttonClicked = false;
 
+    // chartConfig: ChartConfiguration;
+    // isColorblindMode = false;
+
     // ✅ Get colors from unified source
     chartColors = getChartColors();
 

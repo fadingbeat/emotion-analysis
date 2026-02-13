@@ -1,7 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 
-@use '@angular/material' as mat;
-@use './theme.scss' as theme;
+@use "@angular/material" as mat;
+@use "./theme.scss" as theme;
 // @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 // @import "~@angular/cdk/overlay-prebuilt.css";
 @import "theme.scss";
@@ -34,11 +34,38 @@ body {
     background-color: rgba(0, 0, 0, 0.12);
 }
 
-.mat-flex-form {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
+:root {
+    /* Emotion colors */
+    --color-joy: #ffd700;
+    --color-sadness: #4b7ba7;
+    --color-anger: #e53935;
+    --color-fear: #7b68ee;
+    --color-disgust: #6b8e23;
+    --color-surprise: #ff69b4;
+
+    /* Semantic colors */
+    --color-primary: #ec4899; /* Pink */
+    --color-secondary: #0ea5e9; /* Sky blue */
+    --color-accent: #8b5cf6; /* Purple */
+
+    /* Spacing */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+
+    /* Typography */
+    --font-display: "Playfair Display", serif;
+    --font-body: "Lato", sans-serif;
+    --font-mono: "Courier New", monospace;
 }
+
+// .mat-flex-form {
+//     display: flex;
+//     justify-content: center;
+//     flex-direction: column;
+// }
 .mat-flex-status {
     display: flex;
     justify-content: center;
@@ -88,31 +115,141 @@ body {
     margin: 2% 0;
 }
 
-.mat-headline-6 {
-    align-self: left;
-    margin-left: 10%;
-    margin-right: 10%;
-    font-weight: 100;
-    font-size: inherit;
-    line-height: unset;
-    margin-top: 1em;
-    text-align: center;
-}
+// .mat-headline-6 {
+//     align-self: left;
+//     margin-left: 10%;
+//     margin-right: 10%;
+//     font-weight: 100;
+//     font-size: inherit;
+//     line-height: unset;
+//     margin-top: 1em;
+//     text-align: center;
+// }
 .mat-button {
     margin: 0 auto;
 }
-.mat-mdc-form-field {
-    margin: 0 10%;
-}
+// .mat-mdc-form-field {
+//     margin: 0 10%;
+// }
 
 /*
     Styles for component color-visualization
 */
-.mat-flex-color {
+// .mat-flex-color {
+//     display: flex;
+//     flex-direction: row;
+//     justify-content: center;
+//     padding-bottom: 1em;
+// }
+
+.visualization-container {
+    position: fixed;
+    inset: 0;
     display: flex;
-    flex-direction: row;
+    align-items: center;
     justify-content: center;
-    padding-bottom: 1em;
+    animation: colorFade 2s ease-in-out;
+}
+
+.visualization-content {
+    text-align: center;
+    color: white;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.breathing-animation {
+    animation: breathe 4s ease-in-out infinite;
+}
+
+@keyframes breathe {
+    0%,
+    100% {
+        r: 100;
+        opacity: 0.6;
+    }
+    50% {
+        r: 150;
+        opacity: 0.3;
+    }
+}
+
+@keyframes colorFade {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Animation classes for shapes */
+@keyframes pulse {
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.15);
+        opacity: 0.8;
+    }
+}
+
+@keyframes wave {
+    0%,
+    100% {
+        transform: translateX(0) translateY(0);
+    }
+    50% {
+        transform: translateX(10px) translateY(-5px);
+    }
+}
+
+@keyframes flicker {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes twinkle {
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.3;
+        transform: scale(0.95);
+    }
+}
+
+.animate-pulse {
+    animation: pulse 2s ease-in-out infinite;
+}
+.animate-wave {
+    animation: wave 3s ease-in-out infinite;
+}
+.animate-flicker {
+    animation: flicker 1.5s ease-in-out infinite;
+}
+.animate-rotate {
+    animation: rotate 8s linear infinite;
+}
+.animate-twinkle {
+    animation: twinkle 1s ease-in-out infinite;
 }
 
 /* window screen sizes */

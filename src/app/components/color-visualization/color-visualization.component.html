@@ -1,47 +1,51 @@
-<!-- <div class="mat-flex-status">
-  <p class=" mat-headline-4" [ngClass]="{'mat-headline-4-mobilePortrait': ifHandsetPortrait}">Your colors</p>
-  <div *ngIf="loadingSpinner" class="spinner-wrapper">
-    <span class="material-icons animate-ping scale-150 text-red-500">
-      favorite
-    </span>
+<section *ngIf="tColorList && tColorList.length > 0" class="w-full -mt-8 sm:mt-0 lg:mt-0">
+
+  <!-- Section Title -->
+  <div class="max-w-6xl mx-auto mb-8">
+    <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">
+      Your Emotions
+    </h2>
   </div>
-  <p class="emotion-description" [ngClass]="{'emotion-description-mobilePortrait': ifHandsetPortrait}">
-    {{transformedColorsList | json}}</p> -->
 
-<div *ngIf="tColorList" class="mat-flex-color">
-  <div *ngFor="let emotion of tColorList; let i = index">
-    <mat-card [ngStyle]="{'background-color': emotion.selectedHex}" class="example-card">
-      <mat-card-header>
+  <!-- Grid Container: 1 col mobile, 2 col tablet, 3 col desktop -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-6xl mx-auto">
 
-        <mat-card-title>{{emotion.emotionName}}</mat-card-title>
-        <mat-card-subtitle>
-          <div class="color-dropdown">
-            <mat-form-field>
-              <mat-label class="text-pink-400">Choose color</mat-label>
-              <mat-select #selectRef #emotion [(value)]="emotion.selectedValue"
-                (selectionChange)="onColorChange($event.value, i)" (focused)="false">
-                <mat-option *ngFor="let color of emotion.colorOptions" [value]="color">
-                  {{color}}
-                </mat-option>
-              </mat-select>
+    <mat-card *ngFor="let emotion of tColorList; let i = index" [ngStyle]="{'background-color': emotion.selectedHex}"
+      class="shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden">
 
-            </mat-form-field>
-          </div>
-        </mat-card-subtitle>
+      <mat-card-header class="px-4 sm:px-6 py-3 sm:py-4">
+        <mat-card-title class="text-lg sm:text-2xl font-bold text-white">
+          {{ emotion.emotionName }}
+        </mat-card-title>
       </mat-card-header>
-      <mat-card-content>
-        <p>
-          Here will be a description of color and connection to emotion
+
+      <mat-card-content class="px-4 sm:px-6 py-4 space-y-4">
+        <mat-form-field class="w-full">
+          <mat-label>Choose color</mat-label>
+          <mat-select [(value)]="emotion.selectedValue" (selectionChange)="onColorChange($event.value, i)">
+            <mat-option *ngFor="let color of emotion.colorOptions" [value]="color">
+              {{ color }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <p class="text-xs sm:text-sm text-white/90">
+          Description of {{ emotion.emotionName | lowercase }}
         </p>
       </mat-card-content>
-      <mat-card-actions>
-        <button mat-button>Visualize color</button>
+
+      <mat-card-actions class="px-4 sm:px-6 py-3">
+        <button mat-stroked-button (click)="openVisualizationModal(emotion.emotionType, emotion.selectedHex)"
+          class="w-full text-sm text-white border-white hover:bg-white/20">
+          Visualize
+        </button>
       </mat-card-actions>
+
     </mat-card>
+
   </div>
 
-  <!-- </div> -->
-
-
-</div>
-<router-outlet></router-outlet>
+</section>
+<app-emotion-visualization-modal *ngIf="showVisualizationModal" [emotion]="selectedEmotionForModal"
+  [color]="selectedColorForModal" (close)="closeVisualizationModal()">
+</app-emotion-visualization-modal>

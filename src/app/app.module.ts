@@ -17,6 +17,7 @@ import { FooterComponent } from './core/components/footer/footer.component';
 import { HttpClientModule } from '@angular/common/http';
 import { NgChartsModule } from 'ng2-charts';
 import { ColorVisualizationComponent } from './components/color-visualization/color-visualization.component';
+import { EmotionVisualizationModalComponent } from './components/emotion-visualization-modal/emotion-visualization-modal.component';
 
 @NgModule({
     declarations: [
@@ -27,13 +28,14 @@ import { ColorVisualizationComponent } from './components/color-visualization/co
         HeaderComponent,
         FooterComponent,
         ColorVisualizationComponent,
+        EmotionVisualizationModalComponent,
     ],
     imports: [
         BrowserModule,
         HttpClientModule,
+        BrowserAnimationsModule,
         CommonModule,
         AppRoutingModule,
-        BrowserAnimationsModule,
         FormsModule,
         ReactiveFormsModule,
         MaterialModule,

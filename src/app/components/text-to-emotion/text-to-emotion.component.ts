@@ -16,6 +16,8 @@ import {
     EmotionType,
     EmotionDropdownOption,
 } from 'src/app/core/models/emotions';
+import { MatDialog } from '@angular/material/dialog';
+import { ErrorDialogComponent } from 'src/app/core/error-handling/error-dialog/error-dialog.component';
 
 @Component({
     selector: 'app-text-to-emotion',
@@ -29,6 +31,7 @@ export class TextToEmotionComponent implements OnInit {
         private textToEmotionService: TextToEmotionService,
         private responsive: BreakpointObserver,
         public router: Router,
+        private dialog: MatDialog,
     ) {}
     sentence = '';
     userInput = '';
@@ -157,8 +160,8 @@ export class TextToEmotionComponent implements OnInit {
 
         // ✅ Optional: Add word count check
         const wordCount = this.sentence.trim().split(/\s+/).length;
-        if (wordCount < 5) {
-            this.showErrorNotification('Please enter at least 5 words');
+        if (wordCount < 7) {
+            this.showErrorNotification('Please enter at least 7 words');
             return;
         }
 
@@ -225,8 +228,10 @@ export class TextToEmotionComponent implements OnInit {
     }
 
     showErrorNotification(message: string) {
-        // Show error to user (toast, snackbar, etc.)
-        console.log('Error:', message);
+        this.dialog.open(ErrorDialogComponent, {
+            data: { message },
+            width: '400px',
+        });
     }
 
     // NEW WAY (type-safe)
@@ -243,6 +248,7 @@ export class TextToEmotionComponent implements OnInit {
 
                 return {
                     emotionName: config.emotionName,
+                    emotionType: emotionType,
                     colorOptions: allHexColors.map((hex) => getColorName(hex)),
                     selectedValue: getColorName(config.primaryColor),
                     hexValues: allHexColors,

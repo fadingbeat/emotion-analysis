@@ -11,7 +11,10 @@ import {
 } from '@angular/core';
 import { MatSelect } from '@angular/material/select';
 import { HEX_TO_COLOR_NAME } from 'src/app/core/models/types';
-import { EmotionDropdownOption } from 'src/app/core/models/emotions';
+import {
+    EmotionDropdownOption,
+    EmotionType,
+} from 'src/app/core/models/emotions';
 
 @Component({
     selector: 'app-color-visualization',
@@ -78,5 +81,20 @@ export class ColorVisualizationComponent
             this.tColorList[cardIndex].selectedValue = selectedColor;
             this.tColorList[cardIndex].selectedHex = hexCode;
         }
+    }
+
+    showVisualizationModal = false;
+    selectedEmotionForModal!: EmotionType;
+    selectedColorForModal!: string;
+
+    openVisualizationModal(emotion: string, hexColor: string) {
+        const emotionType = emotion as EmotionType;
+        this.selectedEmotionForModal = emotionType;
+        this.selectedColorForModal = hexColor;
+        this.showVisualizationModal = true;
+    }
+
+    closeVisualizationModal() {
+        this.showVisualizationModal = false;
     }
 }

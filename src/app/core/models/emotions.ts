@@ -32,6 +32,7 @@ export interface EmotionColorConfig {
 // ✅ Interface for what the component needs (this replaces transformedColorsList)
 export interface EmotionDropdownOption {
     emotionName: string;
+    emotionType: EmotionType;
     colorOptions: string[];
     selectedValue: string;
     selectedHex: string;
