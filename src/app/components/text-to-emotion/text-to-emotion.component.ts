@@ -216,6 +216,7 @@ export class TextToEmotionComponent implements OnInit {
         }).catch,
             (error: unknown) => {
                 // ✅ Handle errors properly
+                this.loadingSpinner = false;
                 if (error instanceof EmotionAnalysisError) {
                     console.error(`[${error.code}] ${error.message}`);
                     this.showErrorNotification(error.message);
@@ -223,7 +224,6 @@ export class TextToEmotionComponent implements OnInit {
                     console.error('Unexpected error:', error);
                     this.showErrorNotification('An unexpected error occurred');
                 }
-                this.loadingSpinner = false;
             });
     }
 

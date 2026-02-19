@@ -46,6 +46,8 @@ export class EmotionalStatusComponent implements OnInit {
         pattern.draw('diagonal-right-left', 'rgb(255, 99, 132)'),
     ];
 
+    isColorBlindMode = false;
+
     ngOnInit() {
         this.displayEmotionChart();
     }
@@ -56,9 +58,22 @@ export class EmotionalStatusComponent implements OnInit {
         }
     }
 
-    updateChartToColorBlindness() {
-        this.polarChartData.datasets[0].backgroundColor =
-            this.colorBlindnessChart;
+    // updateChartToColorBlindness() {
+    //     this.polarChartData.datasets[0].backgroundColor =
+    //         this.colorBlindnessChart;
+    //     this.chart?.update();
+    // }
+
+    toggleColorblindMode() {
+        this.isColorBlindMode = !this.isColorBlindMode;
+
+        if (this.isColorBlindMode) {
+            this.polarChartData.datasets[0].backgroundColor =
+                this.colorBlindnessChart;
+        } else {
+            this.polarChartData.datasets[0].backgroundColor = this.chartColors;
+        }
+
         this.chart?.update();
     }
 

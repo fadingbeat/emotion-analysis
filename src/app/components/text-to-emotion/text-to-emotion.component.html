@@ -28,11 +28,17 @@
       </mat-form-field>
 
       <div class="flex justify-center sm:justify-start">
-        <button (click)="analyzeSentence()" class="bg-pink-600 hover:bg-pink-700 text-white font-semibold 
+        <button (click)="analyzeSentence()" [disabled]="loadingSpinner" class="bg-pink-600 hover:bg-pink-700 text-white font-semibold 
                  py-3 px-8 rounded-lg shadow-md hover:shadow-lg transition-all duration-200
                  disabled:opacity-50 disabled:cursor-not-allowed">
           How do I feel?
         </button>
+        <!-- ✅ Loading Spinner -->
+        <div *ngIf="loadingSpinner" class="flex items-center gap-3">
+          <div class="w-5 h-5 border-3 border-pink-600 border-t-transparent rounded-full"><mat-spinner diameter="30"
+              [strokeWidth]="4" [color]="'accent'" [ngStyle]="{ '--mdc-theme-primary': '#ec4899' }"></mat-spinner></div>
+          <span class="text-sm text-gray-600">Analyzing...</span>
+        </div>
       </div>
 
     </div>
