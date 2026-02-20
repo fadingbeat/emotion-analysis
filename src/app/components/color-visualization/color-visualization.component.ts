@@ -10,7 +10,11 @@ import {
     ViewChildren,
 } from '@angular/core';
 import { MatSelect } from '@angular/material/select';
-import { HEX_TO_COLOR_NAME } from 'src/app/core/models/types';
+import {
+    HEX_TO_COLOR_NAME,
+    getColorVisualization,
+    isLightColor,
+} from 'src/app/core/models/types';
 import {
     EmotionDropdownOption,
     EmotionType,
@@ -35,6 +39,8 @@ export class ColorVisualizationComponent
     defaultSelectColorList: EmotionDropdownOption[] = [];
 
     selectedColor: string = 'white';
+    isLightColor = isLightColor;
+
     ngOnInit() {
         this.loadingSpinner = true;
         this.responsive
@@ -81,6 +87,11 @@ export class ColorVisualizationComponent
             this.tColorList[cardIndex].selectedValue = selectedColor;
             this.tColorList[cardIndex].selectedHex = hexCode;
         }
+    }
+
+    getColorDescription(hexCode: string): string {
+        const colorViz = getColorVisualization(hexCode);
+        return colorViz?.description || '';
     }
 
     showVisualizationModal = false;

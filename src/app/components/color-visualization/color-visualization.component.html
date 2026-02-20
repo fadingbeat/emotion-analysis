@@ -14,14 +14,17 @@
       class="shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden">
 
       <mat-card-header class="px-4 sm:px-6 py-3 sm:py-4">
-        <mat-card-title class="text-lg sm:text-2xl font-bold text-white">
+        <mat-card-title [ngClass]="isLightColor(emotion.selectedHex) ? 'text-gray-900' : 'text-white'"
+          class="text-lg sm:text-2xl font-bold">
           {{ emotion.emotionName }}
         </mat-card-title>
       </mat-card-header>
 
-      <mat-card-content class="px-4 sm:px-6 py-4 space-y-4">
+      <mat-card-content [ngClass]="isLightColor(emotion.selectedHex) ? 'text-gray-900' : 'text-white'"
+        class="px-4 sm:px-6 py-4 space-y-4">
         <mat-form-field class="w-full">
-          <mat-label>Choose color</mat-label>
+          <mat-label class="text-grey">Choose
+            color</mat-label>
           <mat-select [(value)]="emotion.selectedValue" (selectionChange)="onColorChange($event.value, i)">
             <mat-option *ngFor="let color of emotion.colorOptions" [value]="color">
               {{ color }}
@@ -29,14 +32,16 @@
           </mat-select>
         </mat-form-field>
 
-        <p class="text-xs sm:text-sm text-white/90">
-          Description of {{ emotion.emotionName | lowercase }}
+        <p [ngClass]="isLightColor(emotion.selectedHex) ? 'text-gray-700' : 'text-white/90'" class="text-xs sm:text-sm">
+          {{ getColorDescription(emotion.selectedHex) }}
         </p>
       </mat-card-content>
 
-      <mat-card-actions class="px-4 sm:px-6 py-3">
-        <button mat-stroked-button (click)="openVisualizationModal(emotion.emotionType, emotion.selectedHex)"
-          class="w-full text-sm text-white border-white hover:bg-white/20">
+      <mat-card-actions [ngClass]="isLightColor(emotion.selectedHex) ? '' : ''" class="px-4 sm:px-6 py-3">
+        <button mat-stroked-button
+          [ngClass]="isLightColor(emotion.selectedHex) ? 'text-gray-900 border-gray-900 hover:bg-gray-900/10' : 'text-white border-white hover:bg-white/20'"
+          (click)="openVisualizationModal(emotion.emotionType, emotion.selectedHex)"
+          class="w-full text-sm border-white hover:bg-white/20">
           Visualize
         </button>
       </mat-card-actions>

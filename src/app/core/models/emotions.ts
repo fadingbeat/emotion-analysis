@@ -17,16 +17,22 @@ export type VisualizationShape =
     | 'hexagon'
     | 'star';
 
-// ✅ Interface for a single emotion's color config
-export interface EmotionColorConfig {
-    emotionName: string;
-    primaryColor: string;
-    alternateColors: string[];
+export interface ColorVisualization {
+    colorName: string;
+    hexCode: string;
+    description: string; // Color-emotion connection
     visualization: {
         text: string;
         affirmation: string;
         shape: VisualizationShape;
     };
+}
+
+// ✅ Interface for a single emotion's color config
+export interface EmotionColorConfig {
+    emotionName: string;
+    primaryColor: ColorVisualization;
+    alternateColors: ColorVisualization[];
 }
 
 // ✅ Interface for what the component needs (this replaces transformedColorsList)

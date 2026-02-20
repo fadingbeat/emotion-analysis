@@ -1,6 +1,13 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { EmotionType, VisualizationShape } from 'src/app/core/models/emotions';
-import { EMOTION_COLOR_MAP } from 'src/app/core/models/types';
+import {
+    EmotionType,
+    VisualizationShape,
+    ColorVisualization,
+} from 'src/app/core/models/emotions';
+import {
+    EMOTION_COLOR_MAP,
+    getColorVisualization,
+} from 'src/app/core/models/types';
 import {
     VISUALIZATION_SHAPES,
     ShapeConfig,
@@ -51,26 +58,25 @@ export class EmotionVisualizationModalComponent implements OnInit {
     @Input() color!: string;
     @Output() close = new EventEmitter<void>();
 
-    visualization!: {
-        text: string;
-        affirmation: string;
-        shape: VisualizationShape;
-    };
+    visualization!: ColorVisualization['visualization'];
+    colorName!: string;
     shapeConfig!: ShapeConfig;
     safeSvg!: SafeHtml;
     constructor(private sanitizer: DomSanitizer) {}
 
     ngOnInit() {
-        const config = EMOTION_COLOR_MAP[this.emotion];
-        this.visualization = config.visualization;
-        this.visualization.affirmation =
-            COLOR_AFFIRMATIONS[this.color] || config.visualization.affirmation;
+        const colorViz = getColorVisualization(this.color);
 
-        this.shapeConfig = VISUALIZATION_SHAPES[config.visualization.shape];
-        // Auto-close nakon 60 sekundi
-        this.safeSvg = this.sanitizer.bypassSecurityTrustHtml(
-            this.shapeConfig.svg,
-        );
+        if (colorViz) {
+            this.visualization = colorViz.visualization;
+            this.colorName = colorViz.colorName;
+            this.shapeConfig = VISUALIZATION_SHAPES[this.visualization.shape];
+            this.safeSvg = this.sanitizer.bypassSecurityTrustHtml(
+                this.shapeConfig.svg,
+            );
+        }
+
+        // Auto-close after 60 seconds
         setTimeout(() => this.close.emit(), 60000);
     }
 }

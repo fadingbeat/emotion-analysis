@@ -7,7 +7,7 @@
         "build": "ng build --aot --configuration production",
         "watch": "ng build --watch --configuration development",
         "test": "ng test",
-        "netlify": "netlify"
+        "netlify": "netlify dev"
     },
     "private": true,
     "dependencies": {

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import axios from 'axios';
+import { environment } from 'src/environments/environment';
 import { Emotion } from 'src/app/core/models/types';
 import {
     isValidEmotionResponse,
@@ -93,5 +94,10 @@ export class TextToEmotionService {
                 `Failed to get emotion description: ${error instanceof Error ? error.message : 'Unknown error'}`,
             );
         }
+    };
+
+    // we use this method to get our mocked data
+    getEmotionsMock = () => {
+        return this.http.get(`${environment.base_url}/api/analyze-sentence`);
     };
 }

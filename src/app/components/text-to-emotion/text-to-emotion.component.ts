@@ -167,23 +167,32 @@ export class TextToEmotionComponent implements OnInit {
 
         this.loadingSpinner = true;
 
-        /* Mock function and values */
+        // ✅ USE MOCK
+        // this.textToEmotionService.getEmotionsMock().subscribe({
+        //     next: (res: any) => {
+        //         this.emotionsNormalized = res.emotions_normalized;
+        //         this.statusLoaded = true;
 
-        // this.textToEmotionService.getEmotionsMock().subscribe((res) => {
-        //     const emotions = JSON.parse(JSON.stringify(res));
-        //     this.emotionsNormalized = emotions.emotions_normalized;
-        //     this.statusLoaded = true;
-
-        //     for (const key in this.emotionsNormalized) {
-        //         if (this.emotionsNormalized[key] > 0) {
-        //             this.filteredEmotions[key] = this.emotionsNormalized[key];
+        //         for (const [key, score] of Object.entries(
+        //             this.emotionsNormalized,
+        //         )) {
+        //             if (score > 0) {
+        //                 this.filteredEmotions[key] = score;
+        //             }
         //         }
-        //     }
 
-        //     this.detectedEmotions = Object.keys(this.filteredEmotions);
-        //     this.loadingSpinner = false;
-        //     this.buttonClicked = true;
-        //     this.getColorsVisualizations();
+        //         this.detectedEmotions = Object.keys(this.filteredEmotions);
+        //         this.loadingSpinner = false;
+        //         this.buttonClicked = true;
+        //         this.getColorsVisualizations();
+
+        //         this.sentence = '';
+        //         this.inputName.nativeElement.value = '';
+        //     },
+        //     error: (error: unknown) => {
+        //         this.loadingSpinner = false;
+        //         this.showErrorNotification('Mock data error');
+        //     },
         // });
 
         // Below code is for server communication + add the logic from mock related to extracting only emotions that have a value greater than 0
@@ -241,7 +250,8 @@ export class TextToEmotionComponent implements OnInit {
                 const emotionType = emotionKey as EmotionType;
                 const config = EMOTION_COLOR_MAP[emotionType];
 
-                const allHexColors = [
+                // ✅ Get all ColorVisualization objects (primary + alternates)
+                const allColors = [
                     config.primaryColor,
                     ...config.alternateColors,
                 ];
@@ -249,10 +259,10 @@ export class TextToEmotionComponent implements OnInit {
                 return {
                     emotionName: config.emotionName,
                     emotionType: emotionType,
-                    colorOptions: allHexColors.map((hex) => getColorName(hex)),
-                    selectedValue: getColorName(config.primaryColor),
-                    hexValues: allHexColors,
-                    selectedHex: config.primaryColor,
+                    colorOptions: allColors.map((c) => c.colorName), // Color names
+                    selectedValue: config.primaryColor.colorName,
+                    hexValues: allColors.map((c) => c.hexCode), // Hex codes
+                    selectedHex: config.primaryColor.hexCode,
                 } as EmotionDropdownOption;
             },
         );
