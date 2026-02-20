@@ -16,8 +16,21 @@ export class TextToEmotionService {
 
     public sentence = '';
 
-    // ✅ Now returns typed Emotion or throws error
     getEmotions = async (sentence: string): Promise<Emotion> => {
+        const isNetlifyDev = window.location.port === '8888';
+
+        if (!isNetlifyDev && !environment.production) {
+            // LOCAL DEVELOPMENT: Use Mockoon
+            return this.http
+                .get<Emotion>(`${environment.base_url}/api/analyze-sentence`)
+                .toPromise() as Promise<Emotion>;
+        } else {
+            // NETLIFY DEV or PRODUCTION: Use Netlify Functions
+            return this.getEmotionsProduction(sentence);
+        }
+    };
+
+    private async getEmotionsProduction(sentence: string): Promise<Emotion> {
         if (!sentence || sentence.trim().length === 0) {
             throw new EmotionAnalysisError(
                 'INVALID_INPUT',
@@ -49,7 +62,7 @@ export class TextToEmotionService {
                 `Failed to analyze emotions: ${error instanceof Error ? error.message : 'Unknown error'}`,
             );
         }
-    };
+    }
 
     // ✅ Similar pattern for other methods
     getColorsVisualizations = async (emotionName: string[]): Promise<any> => {
@@ -94,10 +107,5 @@ export class TextToEmotionService {
                 `Failed to get emotion description: ${error instanceof Error ? error.message : 'Unknown error'}`,
             );
         }
-    };
-
-    // we use this method to get our mocked data
-    getEmotionsMock = () => {
-        return this.http.get(`${environment.base_url}/api/analyze-sentence`);
     };
 }

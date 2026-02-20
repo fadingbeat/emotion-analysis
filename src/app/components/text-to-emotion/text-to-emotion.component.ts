@@ -167,35 +167,6 @@ export class TextToEmotionComponent implements OnInit {
 
         this.loadingSpinner = true;
 
-        // ✅ USE MOCK
-        // this.textToEmotionService.getEmotionsMock().subscribe({
-        //     next: (res: any) => {
-        //         this.emotionsNormalized = res.emotions_normalized;
-        //         this.statusLoaded = true;
-
-        //         for (const [key, score] of Object.entries(
-        //             this.emotionsNormalized,
-        //         )) {
-        //             if (score > 0) {
-        //                 this.filteredEmotions[key] = score;
-        //             }
-        //         }
-
-        //         this.detectedEmotions = Object.keys(this.filteredEmotions);
-        //         this.loadingSpinner = false;
-        //         this.buttonClicked = true;
-        //         this.getColorsVisualizations();
-
-        //         this.sentence = '';
-        //         this.inputName.nativeElement.value = '';
-        //     },
-        //     error: (error: unknown) => {
-        //         this.loadingSpinner = false;
-        //         this.showErrorNotification('Mock data error');
-        //     },
-        // });
-
-        // Below code is for server communication + add the logic from mock related to extracting only emotions that have a value greater than 0
         (this.textToEmotionService.getEmotions(this.sentence).then((res) => {
             this.emotionsNormalized = res.emotions_normalized;
             this.statusLoaded = true;
