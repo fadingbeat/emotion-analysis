@@ -1,4 +1,11 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import {
+    Component,
+    Type,
+    Injector,
+    OnInit,
+    ViewChild,
+    ElementRef,
+} from '@angular/core';
 import { TextToEmotionService } from 'src/app/services/text-to-emotion.service';
 import { ResponsiveService } from 'src/app/services/responsive.service';
 import { Router } from '@angular/router';
@@ -26,12 +33,15 @@ import { ErrorDialogComponent } from 'src/app/core/error-handling/error-dialog/e
 })
 export class TextToEmotionComponent implements OnInit {
     @ViewChild('prompt') inputName!: ElementRef<HTMLInputElement>;
+    lazyChart: Type<any> | null = null;
+    myInjector: Injector | undefined = undefined;
 
     constructor(
         private textToEmotionService: TextToEmotionService,
         private responsiveService: ResponsiveService,
         public router: Router,
         private dialog: MatDialog,
+        private injector: Injector,
     ) {}
 
     sentence = '';
@@ -62,6 +72,18 @@ export class TextToEmotionComponent implements OnInit {
         this.filteredEmotions = {};
         this.detectedEmotions = [];
         this.transformedColorsList = [];
+        this.myInjector = Injector.create({
+            providers: [
+                {
+                    provide: 'CHART_DATA',
+                    useValue: {
+                        emotions: this.emotionsNormalized,
+                        loaded: this.statusLoaded,
+                    },
+                },
+            ],
+            parent: this.injector,
+        });
         // ✅ Validate before API call
         if (!this.sentence || this.sentence.trim().length === 0) {
             this.showErrorNotification('Please enter a sentence to analyze');
@@ -92,7 +114,33 @@ export class TextToEmotionComponent implements OnInit {
             this.detectedEmotions = Object.keys(this.filteredEmotions);
 
             this.loadingSpinner = false;
-            this.buttonClicked = true;
+
+            if (!this.lazyChart) {
+                import('./emotional-status/emotional-status.component').then(
+                    (m) => {
+                        // Create a custom injector that provides the data
+                        this.myInjector = Injector.create({
+                            providers: [
+                                {
+                                    provide: 'CHART_DATA',
+                                    useValue: {
+                                        emotions: this.emotionsNormalized || [],
+                                        loaded: this.statusLoaded,
+                                    },
+                                },
+                            ],
+                            parent: this.injector,
+                        });
+
+                        this.lazyChart = m.EmotionalStatusComponent;
+                        this.buttonClicked = true;
+                    },
+                );
+            } else {
+                this.buttonClicked = true;
+            }
+
+            // this.buttonClicked = true;
             this.getColorsVisualizations();
 
             this.sentence = '';

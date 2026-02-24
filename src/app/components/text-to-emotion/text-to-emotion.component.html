@@ -45,9 +45,13 @@
   </section>
 
   <!-- Chart Section -->
-  <app-emotional-status *ngIf="buttonClicked" [emotionsNormalized]="emotionsNormalized" [statusLoaded]="statusLoaded"
+  <!-- <app-emotional-status *ngIf="buttonClicked && lazyChart" [emotionsNormalized]="emotionsNormalized" [statusLoaded]="statusLoaded"
     class="w-full px-4 sm:px-6 lg:px-8 pb-12 sm:pb-16">
-  </app-emotional-status>
+  </app-emotional-status> -->
+  <ng-container *ngIf="buttonClicked && lazyChart && myInjector">
+    <ng-container *ngComponentOutlet="lazyChart; injector: myInjector">
+    </ng-container>
+  </ng-container>
 </form>
 
 <!-- Dropdowns Section (Color Visualization) -->

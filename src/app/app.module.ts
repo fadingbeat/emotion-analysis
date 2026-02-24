@@ -8,7 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TextToEmotionComponent } from './components/text-to-emotion/text-to-emotion.component';
 import { TextToEmotionService } from './services/text-to-emotion.service';
-import { EmotionalStatusComponent } from './components/text-to-emotion/emotional-status/emotional-status.component';
+// import { EmotionalStatusComponent } from './components/text-to-emotion/emotional-status/emotional-status.component';
 import { ErrorDialogComponent } from './core/error-handling/error-dialog/error-dialog.component';
 import { ErrorDialogService } from './core/error-handling/error-dialog.service';
 import { GlobalErrorHandler } from './core/error-handling/global-error-handler';
@@ -23,7 +23,6 @@ import { EmotionVisualizationModalComponent } from './components/emotion-visuali
     declarations: [
         AppComponent,
         TextToEmotionComponent,
-        EmotionalStatusComponent,
         ErrorDialogComponent,
         HeaderComponent,
         FooterComponent,
