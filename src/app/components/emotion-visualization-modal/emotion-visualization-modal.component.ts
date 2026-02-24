@@ -9,18 +9,12 @@ import {
     getColorVisualization,
 } from 'src/app/core/models/types';
 import {
-    VISUALIZATION_SHAPES,
-    ShapeConfig,
-} from 'src/app/core/models/mock-data';
-import {
     trigger,
     state,
     style,
     transition,
     animate,
 } from '@angular/animations';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { COLOR_AFFIRMATIONS } from 'src/app/core/models/mock-data';
 
 @Component({
     selector: 'app-emotion-visualization-modal',
@@ -60,9 +54,6 @@ export class EmotionVisualizationModalComponent implements OnInit {
 
     visualization!: ColorVisualization['visualization'];
     colorName!: string;
-    shapeConfig!: ShapeConfig;
-    safeSvg!: SafeHtml;
-    constructor(private sanitizer: DomSanitizer) {}
 
     ngOnInit() {
         const colorViz = getColorVisualization(this.color);
@@ -70,13 +61,8 @@ export class EmotionVisualizationModalComponent implements OnInit {
         if (colorViz) {
             this.visualization = colorViz.visualization;
             this.colorName = colorViz.colorName;
-            this.shapeConfig = VISUALIZATION_SHAPES[this.visualization.shape];
-            this.safeSvg = this.sanitizer.bypassSecurityTrustHtml(
-                this.shapeConfig.svg,
-            );
         }
 
-        // Auto-close after 60 seconds
         setTimeout(() => this.close.emit(), 60000);
     }
 }

@@ -20,7 +20,7 @@
         <mat-label>
           <span class="animation-pulse text-pink-400">What's on your mind?</span>
         </mat-label>
-        <textarea id="emotion-input" matInput [(ngModel)]="sentence" [formControl]="promptControl"
+        <textarea id="emotion-input" matInput [(ngModel)]="sentence" [ngModelOptions]="{standalone: true}"
           placeholder="Example: My boss told me that my problem-solving skills have improved lately" rows="4"
           class="resize-none" #prompt>
         </textarea>

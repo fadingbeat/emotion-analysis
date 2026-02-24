@@ -1,4 +1,3 @@
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import {
     AfterViewInit,
     Component,
@@ -19,6 +18,7 @@ import {
     EmotionDropdownOption,
     EmotionType,
 } from 'src/app/core/models/emotions';
+import { ResponsiveService } from 'src/app/services/responsive.service';
 
 @Component({
     selector: 'app-color-visualization',
@@ -28,40 +28,25 @@ import {
 export class ColorVisualizationComponent
     implements OnInit, AfterViewInit, OnChanges
 {
-    constructor(private responsive: BreakpointObserver) {}
+    constructor(private responsiveService: ResponsiveService) {}
     @Input() transformedColorsList!: EmotionDropdownOption[];
     @ViewChildren('selectRef') selectRef: MatSelect;
-    ifHandsetPortrait = false;
-    ifHandsetLandscape = false;
-    ifWeb = false;
     loadingSpinner = false;
     tColorList: EmotionDropdownOption[] = [];
     defaultSelectColorList: EmotionDropdownOption[] = [];
-
     selectedColor: string = 'white';
+    ifHandsetPortrait = false;
+    ifHandsetLandscape = false;
+    ifWeb = false;
     isLightColor = isLightColor;
 
     ngOnInit() {
         this.loadingSpinner = true;
-        this.responsive
-            .observe([
-                Breakpoints.HandsetPortrait,
-                Breakpoints.HandsetLandscape,
-                Breakpoints.Web,
-            ])
-            .subscribe((result) => {
-                this.ifHandsetPortrait = false;
-                this.ifHandsetLandscape = false;
-                this.ifWeb = false;
-                const breakpoints = result.breakpoints;
-                if (breakpoints[Breakpoints.HandsetPortrait]) {
-                    this.ifHandsetPortrait = true;
-                } else if (breakpoints[Breakpoints.HandsetLandscape]) {
-                    this.ifHandsetLandscape = true;
-                } else if (breakpoints[Breakpoints.Web]) {
-                    this.ifWeb = true;
-                }
-            });
+        this.responsiveService.observeResponsive().subscribe((state) => {
+            this.ifHandsetPortrait = state.ifHandsetPortrait;
+            this.ifHandsetLandscape = state.ifHandsetLandscape;
+            this.ifWeb = state.ifWeb;
+        });
     }
 
     ngAfterViewInit() {

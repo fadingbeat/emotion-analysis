@@ -1,6 +1,6 @@
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { TextToEmotionService } from 'src/app/services/text-to-emotion.service';
+import { ResponsiveService } from 'src/app/services/responsive.service';
 import { Router } from '@angular/router';
 import { map, Observable, startWith } from 'rxjs';
 import { FormControl } from '@angular/forms';
@@ -29,121 +29,31 @@ export class TextToEmotionComponent implements OnInit {
 
     constructor(
         private textToEmotionService: TextToEmotionService,
-        private responsive: BreakpointObserver,
+        private responsiveService: ResponsiveService,
         public router: Router,
         private dialog: MatDialog,
     ) {}
+
     sentence = '';
-    userInput = '';
-    description =
-        'The application detects emotions based on given input and provides more info about the emotion and colors associated with it. You will be suggested with a guided visualization to help you deal with your feelings.The analyzer currently works with five emotions. You can either use analyzer for emotion detection, or if you already know what you are feeling, choose the emotion from the dropdown menu. ';
     filteredEmotions: Record<string, number> = {};
     detectedEmotions: string[] = [];
     transformedColorsList: EmotionDropdownOption[] = [];
-    regex = '(?<==)(.|\n)*[^=;]';
-    emotionDescription: '';
     statusLoaded = false;
-    colorComponentLoaded = false;
     ifHandsetPortrait = false;
     ifHandsetLandscape = false;
     ifWeb = false;
-    uuid = '';
     loadingSpinner = false;
     buttonClicked = false;
 
     // taking values from emotions_normalized object, storing and displaying only value (emotion) with the highest score
     emotionsNormalized!: EmotionsNormalized;
 
-    // emoticons
-    emojis = {
-        joy: '\u{1F60D}',
-        sadness: '\u{1F97A}',
-        surprise: '\u{1F62E}',
-        fear: '\u{1F628}',
-        disgust: '\u{1F922}',
-        anger: '\u{1F620}',
-        neutral: '\u{1F610}',
-    };
-
-    emo = '&#128512';
-    promptControl = new FormControl('');
-    prompts: string[] = [
-        'I am going to see my mom after two weeks.',
-        'We entered a contest and won the second place. What an astonishment for our team!',
-        'Yesterday during our walk through the forest we saw a giant bird flying towards us and we run as quickly as possible to the car.',
-        'My cousin passed away almost two years ago. He left two kids and a wife behind. Such a tragedy.',
-        'Last night there was such a huge thunderstorm, the electricity was on and off, it was scary to say the least.',
-        'My parents celebrated their 70th anniversary.',
-        'I have been working hard whole summer and now I have deserved to take a vacation and enjoy the seaside.',
-    ];
-    filteredPrompts: Observable<string[]>;
-
-    private _filter(value: string): string[] {
-        const filterValue = value.toLowerCase();
-        return this.prompts.filter((option) =>
-            option.toLowerCase().includes(filterValue),
-        );
-    }
-
     ngOnInit() {
-        this.filteredPrompts = this.promptControl.valueChanges.pipe(
-            startWith(''),
-            map((value) => this._filter(value || '')),
-        );
-
-        this.responsive
-            .observe([
-                Breakpoints.HandsetPortrait,
-                Breakpoints.HandsetLandscape,
-                Breakpoints.Web,
-            ])
-            .subscribe((result) => {
-                this.ifHandsetPortrait = false;
-                this.ifHandsetLandscape = false;
-                this.ifWeb = false;
-                const breakpoints = result.breakpoints;
-                if (breakpoints[Breakpoints.HandsetPortrait]) {
-                    this.ifHandsetPortrait = true;
-                } else if (breakpoints[Breakpoints.HandsetLandscape]) {
-                    this.ifHandsetLandscape = true;
-                } else if (breakpoints[Breakpoints.Web]) {
-                    this.ifWeb = true;
-                }
-            });
-        // this.testEmotionService();
-    }
-
-    // ✅ Test function
-    async testEmotionService() {
-        console.log('🧪 Testing EmotionAnalysisError handling...');
-
-        try {
-            // Test 1: Empty sentence (should throw error)
-            await this.textToEmotionService.getEmotions('');
-        } catch (error) {
-            if (error instanceof EmotionAnalysisError) {
-                console.log('✅ Test 1 PASSED: Caught EmotionAnalysisError');
-                console.log('   Code:', error.code); // Should be 'INVALID_INPUT'
-                console.log('   Message:', error.message);
-            } else {
-                console.log('❌ Test 1 FAILED: Wrong error type');
-            }
-        }
-
-        try {
-            // Test 2: Valid sentence
-            const result = await this.textToEmotionService.getEmotions(
-                'I am very happy with my progress today',
-            );
-            console.log('✅ Test 2 PASSED: Got valid Emotion response');
-            console.log(
-                '   Result has emotions_normalized:',
-                'emotions_normalized' in result,
-            );
-            console.log('   Joy score:', result.emotions_normalized.joy);
-        } catch (error) {
-            console.log('❌ Test 2 FAILED:', error);
-        }
+        this.responsiveService.observeResponsive().subscribe((state) => {
+            this.ifHandsetPortrait = state.ifHandsetPortrait;
+            this.ifHandsetLandscape = state.ifHandsetLandscape;
+            this.ifWeb = state.ifWeb;
+        });
     }
 
     analyzeSentence() {
@@ -238,58 +148,4 @@ export class TextToEmotionComponent implements OnInit {
             },
         );
     }
-
-    /*Hardcoded color values - ugly part of code :D*/
-    //     getColorsVisualizations() {
-    //         // mock ColorEmotion list of objects
-    //         this.transformedColorsList = [
-    //             {
-    //                 emotionName: 'joy',
-    //                 colorOptions: ['yellow', 'orange', 'pink'],
-    //                 selectedValue: 'yellow',
-    //             },
-    //             {
-    //                 emotionName: 'surprise',
-    //                 colorOptions: ['blue', 'purple'],
-    //                 selectedValue: 'blue',
-    //             },
-    //             {
-    //                 emotionName: 'fear',
-    //                 colorOptions: ['black', 'gray'],
-    //                 selectedValue: 'black',
-    //             },
-    //         ];
-
-    //         // uncomment later for production
-    //         // this.textToEmotionService
-    //         //     .getColorsVisualizations(this.detectedEmotions)
-    //         //     .then((res) => {
-    //         //         const messageResponse = res.data.choices[0].message.content;
-    //         //         this.detectedColors = messageResponse.match(this.regex)[0];
-    //         //         this.detectedColorsReplaced = JSON.parse(this.detectedColors);
-    //         //         this.transformedColors = Object.entries(
-    //         //             this.detectedColorsReplaced
-    //         //         ).map(([emotion, colors]) => ({
-    //         //             [emotion]: colors,
-    //         //         }));
-    //         //         this.transformDetectedColors();
-    //         //     });
-    //     }
-
-    //     // uncomment later for production + adjust if needed after displaying data in mat card
-
-    //     // transformDetectedColors = () => {
-    //     //     this.transformedColorsList = this.transformedColors.map(
-    //     //         (emotionObject: { [x: string]: any }) => {
-    //     //             const emotionName = Object.keys(emotionObject)[0];
-    //     //             const colorValue = emotionObject[emotionName];
-    //     //             return {
-    //     //                 emotionName,
-    //     //                 colorValue,
-    //     //             };
-    //     //         }
-    //     //     );
-    //     //     console.log('transformed list', this.transformedColorsList);
-    //     //     return this.transformedColorsList;
-    //     // };
 }

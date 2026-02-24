@@ -63,49 +63,4 @@ export class TextToEmotionService {
             );
         }
     }
-
-    // ✅ Similar pattern for other methods
-    getColorsVisualizations = async (emotionName: string[]): Promise<any> => {
-        // Validate input
-        if (!Array.isArray(emotionName) || emotionName.length === 0) {
-            throw new EmotionAnalysisError(
-                'INVALID_INPUT',
-                'At least one emotion name is required',
-            );
-        }
-
-        const url = `.netlify/functions/get-colors-visualizations?detectedEmotions=${emotionName.join(',')}`;
-
-        try {
-            const { data } = await axios.get(url);
-            // ✅ Add validation for color data if needed
-            return data;
-        } catch (error) {
-            throw new EmotionAnalysisError(
-                'API_ERROR',
-                `Failed to get color visualizations: ${error instanceof Error ? error.message : 'Unknown error'}`,
-            );
-        }
-    };
-
-    getEmotionDescription = async (emotionName: string): Promise<any> => {
-        if (!emotionName || emotionName.trim().length === 0) {
-            throw new EmotionAnalysisError(
-                'INVALID_INPUT',
-                'Emotion name cannot be empty',
-            );
-        }
-
-        const url = `.netlify/functions/get-emotion-description?emotion_name=${encodeURIComponent(emotionName)}`;
-
-        try {
-            const { data } = await axios.get(url);
-            return data;
-        } catch (error) {
-            throw new EmotionAnalysisError(
-                'API_ERROR',
-                `Failed to get emotion description: ${error instanceof Error ? error.message : 'Unknown error'}`,
-            );
-        }
-    };
 }

@@ -31,9 +31,6 @@ export class EmotionalStatusComponent implements OnInit {
     public polarChartData: ChartData<'polarArea'>;
     buttonClicked = false;
 
-    // chartConfig: ChartConfiguration;
-    // isColorblindMode = false;
-
     // ✅ Get colors from unified source
     chartColors = getChartColors();
 
@@ -57,12 +54,6 @@ export class EmotionalStatusComponent implements OnInit {
             this.displayEmotionChart(); // Pozovi kada se emotionsNormalized promijeni
         }
     }
-
-    // updateChartToColorBlindness() {
-    //     this.polarChartData.datasets[0].backgroundColor =
-    //         this.colorBlindnessChart;
-    //     this.chart?.update();
-    // }
 
     toggleColorblindMode() {
         this.isColorBlindMode = !this.isColorBlindMode;

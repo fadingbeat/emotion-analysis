@@ -1,5 +1,5 @@
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, OnInit } from '@angular/core';
+import { ResponsiveService } from 'src/app/services/responsive.service';
 
 @Component({
     selector: 'app-header',
@@ -8,17 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HeaderComponent implements OnInit {
     ifHandsetPortrait = false;
-    constructor(private responsive: BreakpointObserver) {}
+    constructor(private responsiveService: ResponsiveService) {}
 
     ngOnInit() {
-        this.responsive
-            .observe([Breakpoints.HandsetPortrait])
-            .subscribe((result) => {
-                this.ifHandsetPortrait = false;
-                const breakpoints = result.breakpoints;
-                if (breakpoints[Breakpoints.HandsetPortrait]) {
-                    this.ifHandsetPortrait = true;
-                }
-            });
+        this.responsiveService.observeResponsive().subscribe((state) => {
+            this.ifHandsetPortrait = state.ifHandsetPortrait;
+        });
     }
 }
