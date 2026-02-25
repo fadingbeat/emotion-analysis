@@ -1,4 +1,3 @@
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import {
     AfterViewInit,
     Component,
@@ -10,6 +9,16 @@ import {
     ViewChildren,
 } from '@angular/core';
 import { MatSelect } from '@angular/material/select';
+import {
+    HEX_TO_COLOR_NAME,
+    getColorVisualization,
+    isLightColor,
+} from 'src/app/core/models/types';
+import {
+    EmotionDropdownOption,
+    EmotionType,
+} from 'src/app/core/models/emotions';
+import { ResponsiveService } from 'src/app/services/responsive.service';
 
 @Component({
     selector: 'app-color-visualization',
@@ -19,39 +28,25 @@ import { MatSelect } from '@angular/material/select';
 export class ColorVisualizationComponent
     implements OnInit, AfterViewInit, OnChanges
 {
-    constructor(private responsive: BreakpointObserver) {}
-    @Input() transformedColorsList: any;
+    constructor(private responsiveService: ResponsiveService) {}
+    @Input() transformedColorsList!: EmotionDropdownOption[];
     @ViewChildren('selectRef') selectRef: MatSelect;
+    loadingSpinner = false;
+    tColorList: EmotionDropdownOption[] = [];
+    defaultSelectColorList: EmotionDropdownOption[] = [];
+    selectedColor: string = 'white';
     ifHandsetPortrait = false;
     ifHandsetLandscape = false;
     ifWeb = false;
-    loadingSpinner = false;
-    defaultSelectColorList = [];
-    tColorList: any;
-    card: any;
-    activeMatCardEl: any;
-    selectedColor: string = 'white';
+    isLightColor = isLightColor;
+
     ngOnInit() {
         this.loadingSpinner = true;
-        this.responsive
-            .observe([
-                Breakpoints.HandsetPortrait,
-                Breakpoints.HandsetLandscape,
-                Breakpoints.Web,
-            ])
-            .subscribe((result) => {
-                this.ifHandsetPortrait = false;
-                this.ifHandsetLandscape = false;
-                this.ifWeb = false;
-                const breakpoints = result.breakpoints;
-                if (breakpoints[Breakpoints.HandsetPortrait]) {
-                    this.ifHandsetPortrait = true;
-                } else if (breakpoints[Breakpoints.HandsetLandscape]) {
-                    this.ifHandsetLandscape = true;
-                } else if (breakpoints[Breakpoints.Web]) {
-                    this.ifWeb = true;
-                }
-            });
+        this.responsiveService.observeResponsive().subscribe((state) => {
+            this.ifHandsetPortrait = state.ifHandsetPortrait;
+            this.ifHandsetLandscape = state.ifHandsetLandscape;
+            this.ifWeb = state.ifWeb;
+        });
     }
 
     ngAfterViewInit() {
@@ -61,15 +56,41 @@ export class ColorVisualizationComponent
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        this.tColorList = changes.transformedColorsList.currentValue;
+        if (changes['transformedColorsList'])
+            this.tColorList = changes.transformedColorsList.currentValue;
         if (this.tColorList) {
-            for (const c of this.tColorList) {
-            }
             this.defaultSelectColorList = this.tColorList;
         }
     }
 
     onColorChange(selectedColor: string, cardIndex: number) {
-        this.tColorList[cardIndex].selectedColor = selectedColor;
+        const hexCode = Object.entries(HEX_TO_COLOR_NAME).find(
+            ([_, name]) => name === selectedColor,
+        )?.[0];
+
+        if (hexCode) {
+            this.tColorList[cardIndex].selectedValue = selectedColor;
+            this.tColorList[cardIndex].selectedHex = hexCode;
+        }
+    }
+
+    getColorDescription(hexCode: string): string {
+        const colorViz = getColorVisualization(hexCode);
+        return colorViz?.description || '';
+    }
+
+    showVisualizationModal = false;
+    selectedEmotionForModal!: EmotionType;
+    selectedColorForModal!: string;
+
+    openVisualizationModal(emotion: string, hexColor: string) {
+        const emotionType = emotion as EmotionType;
+        this.selectedEmotionForModal = emotionType;
+        this.selectedColorForModal = hexColor;
+        this.showVisualizationModal = true;
+    }
+
+    closeVisualizationModal() {
+        this.showVisualizationModal = false;
     }
 }

@@ -8,36 +8,34 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TextToEmotionComponent } from './components/text-to-emotion/text-to-emotion.component';
 import { TextToEmotionService } from './services/text-to-emotion.service';
-import { EmotionalStatusComponent } from './components/text-to-emotion/emotional-status/emotional-status.component';
 import { ErrorDialogComponent } from './core/error-handling/error-dialog/error-dialog.component';
 import { ErrorDialogService } from './core/error-handling/error-dialog.service';
 import { GlobalErrorHandler } from './core/error-handling/global-error-handler';
 import { HeaderComponent } from './core/components/header/header.component';
 import { FooterComponent } from './core/components/footer/footer.component';
 import { HttpClientModule } from '@angular/common/http';
-import { NgChartsModule } from 'ng2-charts';
 import { ColorVisualizationComponent } from './components/color-visualization/color-visualization.component';
+import { EmotionVisualizationModalComponent } from './components/emotion-visualization-modal/emotion-visualization-modal.component';
 
 @NgModule({
     declarations: [
         AppComponent,
         TextToEmotionComponent,
-        EmotionalStatusComponent,
         ErrorDialogComponent,
         HeaderComponent,
         FooterComponent,
         ColorVisualizationComponent,
+        EmotionVisualizationModalComponent,
     ],
     imports: [
         BrowserModule,
         HttpClientModule,
+        BrowserAnimationsModule,
         CommonModule,
         AppRoutingModule,
-        BrowserAnimationsModule,
         FormsModule,
         ReactiveFormsModule,
         MaterialModule,
-        NgChartsModule,
     ],
 
     providers: [
