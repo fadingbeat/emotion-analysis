@@ -9,7 +9,7 @@ import {
 import { TextToEmotionService } from 'src/app/services/text-to-emotion.service';
 import { ResponsiveService } from 'src/app/services/responsive.service';
 import { Router } from '@angular/router';
-import { map, Observable, startWith } from 'rxjs';
+import { BehaviorSubject, map, Observable, startWith } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import {
     Emotion,
@@ -22,6 +22,7 @@ import {
 import {
     EmotionType,
     EmotionDropdownOption,
+    ChartData,
 } from 'src/app/core/models/emotions';
 import { MatDialog } from '@angular/material/dialog';
 import { ErrorDialogComponent } from 'src/app/core/error-handling/error-dialog/error-dialog.component';
@@ -41,7 +42,6 @@ export class TextToEmotionComponent implements OnInit {
         private responsiveService: ResponsiveService,
         public router: Router,
         private dialog: MatDialog,
-        private injector: Injector,
     ) {}
 
     sentence = '';
@@ -58,6 +58,9 @@ export class TextToEmotionComponent implements OnInit {
     // taking values from emotions_normalized object, storing and displaying only value (emotion) with the highest score
     emotionsNormalized!: EmotionsNormalized;
 
+    private emotionsSource = new BehaviorSubject<ChartData | null>(null);
+    emotions$ = this.emotionsSource.asObservable();
+
     ngOnInit() {
         this.responsiveService.observeResponsive().subscribe((state) => {
             this.ifHandsetPortrait = state.ifHandsetPortrait;
@@ -72,18 +75,7 @@ export class TextToEmotionComponent implements OnInit {
         this.filteredEmotions = {};
         this.detectedEmotions = [];
         this.transformedColorsList = [];
-        this.myInjector = Injector.create({
-            providers: [
-                {
-                    provide: 'CHART_DATA',
-                    useValue: {
-                        emotions: this.emotionsNormalized,
-                        loaded: this.statusLoaded,
-                    },
-                },
-            ],
-            parent: this.injector,
-        });
+
         // ✅ Validate before API call
         if (!this.sentence || this.sentence.trim().length === 0) {
             this.showErrorNotification('Please enter a sentence to analyze');
@@ -112,8 +104,12 @@ export class TextToEmotionComponent implements OnInit {
             }
 
             this.detectedEmotions = Object.keys(this.filteredEmotions);
-
             this.loadingSpinner = false;
+
+            this.emotionsSource.next({
+                emotions: this.emotionsNormalized || [],
+                loaded: this.statusLoaded,
+            });
 
             if (!this.lazyChart) {
                 import('./emotional-status/emotional-status.component').then(
@@ -123,13 +119,9 @@ export class TextToEmotionComponent implements OnInit {
                             providers: [
                                 {
                                     provide: 'CHART_DATA',
-                                    useValue: {
-                                        emotions: this.emotionsNormalized || [],
-                                        loaded: this.statusLoaded,
-                                    },
+                                    useValue: this.emotions$,
                                 },
                             ],
-                            parent: this.injector,
                         });
 
                         this.lazyChart = m.EmotionalStatusComponent;

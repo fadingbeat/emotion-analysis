@@ -100,6 +100,7 @@ import {
     OnInit,
     ViewChild,
     SimpleChanges,
+    OnDestroy,
 } from '@angular/core';
 import { ChartData } from 'chart.js';
 import pattern from 'patternomaly';
@@ -112,6 +113,7 @@ import {
 } from 'src/app/core/models/types';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from 'src/app/shared/material.module';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-emotional-status',
@@ -120,9 +122,10 @@ import { MaterialModule } from 'src/app/shared/material.module';
     templateUrl: './emotional-status.component.html',
     styleUrls: ['./emotional-status.component.scss'],
 })
-export class EmotionalStatusComponent implements OnInit {
+export class EmotionalStatusComponent implements OnInit, OnDestroy {
+    private dataSub: Subscription;
     // 1. Inject the data from the parent
-    constructor(@Inject('CHART_DATA') public injectedData: any) {}
+    constructor(@Inject('CHART_DATA') public data$: Observable<any>) {}
 
     @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 
@@ -160,15 +163,25 @@ export class EmotionalStatusComponent implements OnInit {
 
     ngOnInit() {
         // 2. MAP THE INJECTED DATA HERE
-        if (this.injectedData) {
-            this._emotionsNormalized = this.injectedData.emotions;
-            this.statusLoaded = this.injectedData.loaded;
+        // if (this.injectedData) {
+        //     this._emotionsNormalized = this.injectedData.emotions;
+        //     this.statusLoaded = this.injectedData.loaded;
 
-            // 3. Trigger the chart generation now that variables are set
-            if (this._emotionsNormalized) {
+        //     // 3. Trigger the chart generation now that variables are set
+        //     if (this._emotionsNormalized) {
+        //         this.displayEmotionChart();
+        //     }
+        // }
+
+        this.dataSub = this.data$.subscribe((newData) => {
+            if (newData) {
+                this.emotionsNormalized = newData.emotions;
+                this.statusLoaded = newData.loaded;
+
                 this.displayEmotionChart();
+                this.chart?.update(); // Refresh the visual
             }
-        }
+        });
     }
 
     // Note: ngOnChanges is removed because we are no longer using [inputs] in HTML
@@ -207,5 +220,9 @@ export class EmotionalStatusComponent implements OnInit {
                 },
             ],
         };
+    }
+
+    ngOnDestroy() {
+        this.dataSub?.unsubscribe();
     }
 }

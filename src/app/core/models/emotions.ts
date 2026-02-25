@@ -1,3 +1,5 @@
+import { EmotionsNormalized } from './types';
+
 // ✅ Enum for emotion names (matches your API keys exactly)
 export enum EmotionType {
     JOY = 'joy',
@@ -49,4 +51,11 @@ export interface EmotionDropdownOption {
 export interface EmotionColor {
     emotionName: string;
     colorValue: string[];
+}
+
+// src/app/core/models/emotions.ts
+
+export interface ChartData {
+    emotions: EmotionsNormalized;
+    loaded: boolean;
 }
